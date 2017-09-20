@@ -318,7 +318,9 @@ class wKDETool(wKDE):
 
     def _load_westh5(self):
         '''
-        ADD ME I SHOULD BE DESCRIPTIVE
+        Non-public.
+        Create the attribute self.westh5, a h5py File handle for the
+        user-specified WESTPA data file (usually west.h5)
         '''
         try: 
             self.westh5 = h5py.File(self.args.westh5_path,'r') 
