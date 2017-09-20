@@ -66,7 +66,8 @@ class KDE:
         if weights is not None:
             self.weights = weights
         else:
-            self.weights = None
+            self.weights = numpy.ones(self.data.shape[0], dtype=float)\
+                           /float(self.data.shape[0])
 
     def set_kernel_type(self, kernel):
         self.kernel_type = kernel
