@@ -73,6 +73,8 @@ class KDE:
     def evaluate(self, points):
         if self.kernel_type == 'gaussian':
             return self._compute_density_gaussian(points)
+        #elif self.kernel_type == 'gamma':
+        #    return self._compute_density_gamma(points)
         else:
             return 'kernel type {} not implemented'.format(self.kernel_type)
 
@@ -118,6 +120,22 @@ class KDE:
         result /= (self.weights.sum()*numpy.sqrt(2*numpy.pi*h**2))
         return result
 
+    def _compute_density_gamma(self, points):
+        '''
+        Compute the kernel density estimate of the probability density
+        at each point in the vector ``points``, using a gamma kernel.
+        '''
+        result = numpy.empty(points.shape, dtype = numpy.float64)
+        for idx, p in enumerate(points):
+            difference = self.data - p
+            scaled_diff = difference/self.h**2
+            var = numpy.divide(numpy.sum(numpy.multiply(scaled_diff, difference), axis=1),-2)
+            vals = numpy.exp(var)
+            result[idx] = numpy.multiply(vals, self.weights).sum(axis=0)
+        h = self.h
+        result /= (self.weights.sum()*numpy.sqrt(2*numpy.pi*h**2))
+        return result
+
     def _compute_inv_cov(self):
         cov_mat = weightedcovariance(self.data, self.weights)
         self.inv_cov = numpy.linalg.inv(cov_mat)
@@ -140,8 +158,8 @@ class wKDE(KDE):
 
         # If the user does not specify a range of iterations to use, parse the 
         # west.h5 to get the entire range of iterations. 
-	self.first_iter = first_iter
-	self.last_iter = last_iter
+        self.first_iter = first_iter
+        self.last_iter = last_iter
         if self.first_iter is None or self.last_iter is None:
             self._get_iter_range()
         # By default, use the progress coordinate for data.
@@ -152,8 +170,8 @@ class wKDE(KDE):
 
         self._scan_data()
         self._load_data()
-	self.set_kernel_type('gaussian')
-	self.h = bw
+        self.set_kernel_type('gaussian')
+        self.h = bw
 
 
     def _raise_error(self, err, errmsg):
