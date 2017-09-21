@@ -31,7 +31,7 @@ class KDE:
     def set_kernel_type(self, kernel):
         # Check to make sure the kernel is compatible with the data shape
         if kernel == 'gamma':
-            if not _ndarray_is_1d(self, self.data):
+            if not self._ndarray_is_1d(self.data):
                 raise Exception('Gamma kernel is only compatible with '
                                 '1-dimensional data, but data is shape {}'\
                                 .format(self.data.shape))
