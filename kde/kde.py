@@ -3,7 +3,7 @@ import numpy
 import scipy.special
 import statistics
 
-class KDE:
+class KDE(object):
     def __init__(self, data, kernel='gaussian', weights = None, bw=1):
         self.data = data
         self.set_kernel_type(kernel)
