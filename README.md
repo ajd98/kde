@@ -26,10 +26,10 @@ Kernel density estimation is performed via the `KDE` class, accessible as `kde.K
 class kde.KDE(data, kernel='gaussian', weights=None, bw=1)
 ```
 
-<p style="margin-left: 4em">
+<p style="display: block; margin-left: 4em">
 Parameters:
 </p>
-<p style="margin-left: 8em">
+<p style="display: block; margin-left: 8em">
 data: numpy.ndarray
 </p>
 The values of the samples in R<sup>2</sup> or R (gaussian kernel) or R+ (gamma kernel)
