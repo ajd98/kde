@@ -15,7 +15,7 @@ Before using this library, you will need to make sure that it may be imported by
 
 <nowiki>
 import sys
-sys.path.append("<path to this git repository>")
+sys.path.append("path to this git repository")
 </nowiki>
 
 Then, import the <code>kde</code> module via Python.
