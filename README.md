@@ -26,19 +26,23 @@ Kernel density estimation is performed via the `KDE` class, accessible as `kde.K
 class kde.KDE(data, kernel='gaussian', weights=None, bw=1)
 ```
 
-    Parameters:
-        data: numpy.ndarray
-             The values of the samples in R<sup>2</sup> or R (gaussian kernel) or R+ (gamma kernel)
-         kernel     string
-             The kernel. Options are <code>"gaussian"</code> and <code>"gamma"</code>.
-         weights     numpy.ndarray or <code>None</code>
-             The weights of the samples. If <code>None</code>, the samples are uniformly weighted.
-         bw     float
-             The bandwidth of the kernel (σ for gaussian kernel, or square-root of variance of gamma distribution for gamma kernel)
+<p style="margin-left: 4em">
+Parameters:
+</p>
+<p style="margin-left: 8em">
+data: numpy.ndarray
+</p>
+The values of the samples in R<sup>2</sup> or R (gaussian kernel) or R+ (gamma kernel)
+kernel string
+The kernel. Options are <code>"gaussian"</code> and <code>"gamma"</code>.
+weights numpy.ndarray or <code>None</code>
+The weights of the samples. If <code>None</code>, the samples are uniformly weighted.
+bw float
+The bandwidth of the kernel (σ for gaussian kernel, or square-root of variance of gamma distribution for gamma kernel)
 
-     Methods    
-         set_kernel_type(kernel)
-             Set the kernel to <code>kernel</code>. Options are <code>"gaussian"</code> and <code>"gamma"</code>.
-         evaluate(p)
-             Evaluate the kernel density estimate at each position of <code>p</code>, an n-by-k numpy array, where k is the number of features of the samples.
+Methods
+set_kernel_type(kernel)
+Set the kernel to <code>kernel</code>. Options are <code>"gaussian"</code> and <code>"gamma"</code>.
+evaluate(p)
+Evaluate the kernel density estimate at each position of <code>p</code>, an n-by-k numpy array, where k is the number of features of the samples.
 
