@@ -27,6 +27,7 @@ class kde.KDE(data, kernel='gaussian', weights=None, bw=1)
 ```
 
 Parameters:
+
 | Parameter | Data type | Description |
 | --------- | --------- | ----------- |
 | `data`    | `numpy.ndarray` | The values of the samples in R2 or R (gaussian kernel) or R+ (gamma kernel) |
@@ -35,6 +36,7 @@ Parameters:
 | `bw`      | `float` | The bandwidth of the kernel (σ for gaussian kernel, or square-root of variance of gamma distribution for gamma kernel) |
             
 Methods:
+
 | Method | Description |
 | ------ | ----------- |
 | set_kernel_type(kernel) | Set the kernel to kernel. Options are "gaussian" and "gamma". |
