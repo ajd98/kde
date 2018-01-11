@@ -31,7 +31,7 @@ Parameters:
 | Parameter | Data type | Description |
 | --------- | --------- | ----------- |
 | `data`    | `numpy.ndarray` | The values of the samples in R2 or R (gaussian kernel) or R+ (gamma kernel) |
-| `kernel`  | `string` | The Kernel. Options are `"gaussian"` and `"gamma"`. The Gaussian kernel is given by _p(x) = 1/sqrt(2πσ) exp(-x<sup>2</sup>/(2σ<sup>2</sup>))_. The gamma kernel is given by _p(x) = 1/[Γ(k) θ<sup>k</sup>] x<sup>k-1</sup> exp(-x/θ)_, with _θ_, _k_ chosen such that the mode of _p_ corresponds with the value of each sample, and the square root of the variance of _p_ is equal to `bw` (described below) |
+| `kernel`  | `string` | The Kernel. Options are `"gaussian"` and `"gamma"`. The Gaussian kernel is given by<br> _p(x) = 1/sqrt(2πσ) exp(-x<sup>2</sup>/(2σ<sup>2</sup>))_<br> The gamma kernel is given by<br> _p(x) = 1/[Γ(k) θ<sup>k</sup>] x<sup>k-1</sup> exp(-x/θ)_<br> with _θ_, _k_ chosen such that the mode of _p_ corresponds with the value of each sample, and the square root of the variance of _p_ is equal to `bw` (described below) |
 | `weights` | `numpy.ndarray` or `None` | The weights of the samples. If `None`, the samples are uniformly weighted. |
 | `bw`      | `float` | The bandwidth of the kernel (σ for gaussian kernel, or square-root of variance of gamma distribution for gamma kernel) |
 
