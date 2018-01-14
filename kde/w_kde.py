@@ -139,6 +139,8 @@ class WKDETool(WKDE):
         self.set_kernel_type('gaussian')
         self._scan_data()
         self._load_data()
+        self._eval_grid()
+        self.go()
 
     def _parse_args(self):
         parser = argparse.ArgumentParser()
@@ -182,13 +184,46 @@ class WKDETool(WKDE):
                                  'By default, use all dimensions of the '
                                  'progress coordinate.',
                             type=str)
+
         parser.add_argument('--bw', default=1,
                             dest='bw',
                             help='For gaussian kernels, use ``bw`` as sigma.',
                             type=float)
 
+        parser.add_argument('--grid', default=None, required=True,
+                            dest='gridstr', metavar='GRID_STRING'
+                            help='Evaluate the kernel density estimate at each '
+                                 'point in the specified grid. ``GRID_STRING`` '
+                                 'should be string that Python can parse to a '
+                                 'numpy array or list of numbers. While parsing'
+                                 ' the string, numpy is made available as '
+                                 '``numpy``.  For example, you may specify '
+                                 '--grid "numpy.linspace(0,10,100)" in order to' 
+                                 ' evaluate the kernel density estimate at 100 '
+                                 'points evenly spaced between 0 and 10. The '
+                                 'grid may also be specified via pure Python '
+                                 'lists or list comprehensions, e.g., --grid '
+                                 '"[0,1,2,3,4]" or --grid "[float(i)/10 for i '
+                                 'in range(100)".'
+                            )
+
+        parser.add_argument('--output', default='pdf_estimate.dat', 
+                            dest='output',
+                            help='Save the result of evaluating the kernel '
+                                 'density estimate at each point in '
+                                 '``GRID_STRING`` in the file ``OUTPUT``. '
+                                 'Values are saved in ASCII format, with (if '
+                                 'applicable) the rows indexing the first '
+                                 'dimension of the grid, and the columns '
+                                 'indexing the second dimension of the grid.'
+                            )
+
+
         self.args = parser.parse_args() 
         self.h = self.args.bw
+
+    def _eval_grid(self):
+        self.grid = eval(self.args.gridstr)
 
     def _import_func(self):
         '''
@@ -246,5 +281,9 @@ class WKDETool(WKDE):
 
         self.iter_range = (first_iter, last_iter)
 
+    def go(self):
+        result = super(WKDETool, self).go(self.grid)
+        numpy.savetxt(self.args.output, result)
+
 if __name__ == "__main__":
-    kdestimator = wKDETool()
+    kdestimator = WKDETool()
