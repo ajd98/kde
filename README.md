@@ -47,10 +47,10 @@ Methods:
 
 This library provides classes for interacting with WESTPA data sets, enabling kernel density estimation from WESTPA data via Python scripts and via the command line.
 
-From within a Python script, import the `w_kde` module, which provides the `w_kde.WKDE` class for interacting with WESTPA data sets.  The `WKDE` class should be initialized as:
+From within a Python script, import the `kde` module, which provides the `kde.WKDE` class for interacting with WESTPA data sets.  The `WKDE` class should be initialized as:
 
 ```
-class w_kde.WKDE(westh5, first_iter=None, last_iter=None, load_func=None, bw=1)
+kde.WKDE(westh5, first_iter=None, last_iter=None, load_func=None, bw=1)
 ```
 
 | Parameter | Data type | Description |
