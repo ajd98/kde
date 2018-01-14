@@ -191,7 +191,7 @@ class WKDETool(WKDE):
                             type=float)
 
         parser.add_argument('--grid', default=None, required=True,
-                            dest='gridstr', metavar='GRID_STRING'
+                            dest='gridstr', metavar='GRID_STRING',
                             help='Evaluate the kernel density estimate at each '
                                  'point in the specified grid. ``GRID_STRING`` '
                                  'should be string that Python can parse to a '
