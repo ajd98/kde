@@ -30,8 +30,7 @@ class WKDE(kde.KDE):
         # west.h5 to get the entire range of iterations. 
         self.first_iter = first_iter
         self.last_iter = last_iter
-        if self.first_iter is None or self.last_iter is None:
-            self._get_iter_range()
+        self._get_iter_range()
         # By default, use the progress coordinate for data.
         if load_func is None:
             self._load_func = self._get_pcoord
