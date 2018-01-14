@@ -42,7 +42,6 @@ Methods:
 | ------ | ----------- |
 | `set_kernel_type(kernel)` | Set the kernel to `kernel`. Options are `"gaussian"` and `"gamma"`. |
 | `evaluate(p)` | Evaluate the kernel density estimate at each position of `p`, an _n_-by-_k_ numpy array, where _k_ is the number of features of the samples. |
-```
 
 ### Kernel density estimation with WESTPA data
 
