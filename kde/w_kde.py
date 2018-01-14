@@ -204,7 +204,15 @@ class WKDETool(WKDE):
                                  'grid may also be specified via pure Python '
                                  'lists or list comprehensions, e.g., --grid '
                                  '"[0,1,2,3,4]" or --grid "[float(i)/10 for i '
-                                 'in range(100)".'
+                                 'in range(100)". For multi-dimensional grids, '
+                                 'it is recommended to use the ``mgrid`` method'
+                                 ' of numpy, e.g., --grid '
+                                 '"numpy.mgrid[0:20:201j,0:10:101j].reshape(2,-1).T"'
+                                 'to evaluate the kernel density estimate on a '
+                                 'grid consisting of 201 points evenly spaced '
+                                 'between 0 and 20 in the first dimension and '
+                                 '101 points evenly spaced between 0 and 10 in '
+                                 'the second dimension.'
                             )
 
         parser.add_argument('--output', default='pdf_estimate.dat', 
@@ -213,9 +221,8 @@ class WKDETool(WKDE):
                                  'density estimate at each point in '
                                  '``GRID_STRING`` in the file ``OUTPUT``. '
                                  'Values are saved in ASCII format, with (if '
-                                 'applicable) the rows indexing the first '
-                                 'dimension of the grid, and the columns '
-                                 'indexing the second dimension of the grid.'
+                                 'applicable) the rows indexing the data point,'
+                                 ' and the columns indexing the dimension.'
                             )
 
 
