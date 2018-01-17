@@ -23,7 +23,7 @@ class KDE(object):
         if arr.ndim == 1:
             return True
         else:
-            for dim in xrange(1,arr.ndim):
+            for dim in range(1,arr.ndim):
                 if arr.shape[dim] > 1:
                     return False
         return True
@@ -56,7 +56,7 @@ class KDE(object):
         '''
         result = arr
         offset = 0
-        for iax in xrange(arr.ndim):
+        for iax in range(arr.ndim):
 
             # Keep collapsing the zeroth axis until we reach 
             # ``except_this_axis``

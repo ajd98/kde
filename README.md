@@ -42,5 +42,25 @@ Methods:
 | ------ | ----------- |
 | `set_kernel_type(kernel)` | Set the kernel to `kernel`. Options are `"gaussian"` and `"gamma"`. |
 | `evaluate(p)` | Evaluate the kernel density estimate at each position of `p`, an _n_-by-_k_ numpy array, where _k_ is the number of features of the samples. |
+
+### Kernel density estimation with WESTPA data
+
+This library provides classes for interacting with WESTPA data sets, enabling kernel density estimation from WESTPA data via Python scripts and via the command line.
+
+From within a Python script, import the `kde` module, which provides the `kde.WKDE` class for interacting with WESTPA data sets.  The `WKDE` class should be initialized as:
+
+```
+kde.WKDE(westh5, first_iter=None, last_iter=None, load_func=None, bw=1)
 ```
 
+| Parameter | Data type | Description |
+| --------- | --------- | ----------- |
+| `westh5` | `h5py` HDF5 File object | The WESTPA data file (typically named 'west.h5') |
+| `first_iter` | `int` or `None` | The first weighted ensemble iteration from which to use data. If `None`, start at iteration 1. |
+| `last_iter` | `int` or `None` | The last weighted ensemble iteration from which to use data (inclusive). |
+| `load_func` | Python function or `None` | Load data using the specified Python function.  The function will be called as `load_func(iter_group, niter)` where `iter_group` is the HDF5 group corresponding to a weighted ensemble iteration, and `niter` is an integer denoting the index of the weighted ensemble iteration.  The function should return a numpy array of shape (nsegs, ntimepoints, ndim) where nsegs is the number of segments in that iteration, ntimepoints is the number of sub-iteration timepoints, and ndim is the number of dimensions of the coordinate. If `None` (default), load the progress coordinate data. |
+| `bw` | `float` | The bandwidth to use for the kernel.  See the `bw` parameter of the `kde.KDE` class for more information. |
+
+Following initialization, call the `go` method as `<WKDE class instance>.go(points)` to evaluate the kernel density estimate at each point in `points`.  A gaussian kernel is set automatically; to use another kernel, use the `set_kernel_type` method (see documentation for `kde.KDE`) followed by the `evaluate` method.
+
+To interact with WESTPA data from the command line, run `python kde/w_kde.py` include the `-h` or `--help` flag for more information.
