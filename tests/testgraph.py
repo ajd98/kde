@@ -42,7 +42,7 @@ class KDETest(object):
         data = numpy.array([1,1,2,2,3,3,3,4,6,8], dtype=float)
         #weights = numpy.array([5,8,9,4,5,2,3,1,1,2], dtype=float)
         #weights /= weights.sum()
-        pdf = kde.kde.KDE(data)
+        pdf = kde.KDE(data)
         xs = numpy.linspace(0,15,num=500)
         ys = pdf.evaluate(xs)
         axis.plot(xs, ys, color='black')
@@ -52,7 +52,7 @@ class KDETest(object):
         #weights = numpy.array([5,8,9,4,5,2,3,1,1,2], dtype=float)
         weights = numpy.array([1,1,1,1,1,1,1,1,1,1], dtype=float)
         weights /= weights.sum()
-        pdf = kde.kde.KDE(data, weights=weights)
+        pdf = kde.KDE(data, weights=weights)
         xs = numpy.linspace(0,15,num=500)
         ys = pdf.evaluate(xs)
         axis.plot(xs, ys, color='black')
@@ -61,10 +61,39 @@ class KDETest(object):
         data = numpy.array([1,1,2,2,3,3,3,4,6,8], dtype=float)
         weights = numpy.array([5,8,9,4,5,2,3,1,1,2], dtype=float)
         weights /= weights.sum()
-        pdf = kde.kde.KDE(data, weights=weights, kernel='gamma')
+        pdf = kde.KDE(data, weights=weights, kernel='gamma')
         xs = numpy.linspace(0,15,num=500)
         ys = pdf.evaluate(xs)
         axis.plot(xs, ys, color='black')
 
+class KDE2DTest(object):
+    '''
+    Test 2-dimensional kernel density estimation.
+    '''
+    def __init__(self):
+        matplotlib.rcParams['font.size'] = 6
+        fig = pyplot.gcf()
+        ax = pyplot.gca()
+        
+        data = [(2,3),
+                (2,3),
+                (4,1),
+                (7,1),
+                (2,2),
+                (5,4)]
+        data = numpy.array(data)
+        grid = numpy.linspace
+        grid = numpy.mgrid[0:10:101j,0:10:101j].reshape(2,-1).T
+        x = numpy.linspace(0,10,101)
+        y = numpy.linspace(0,10,101)
+
+        pdf = kde.KDE(data).evaluate(grid).reshape(101,101)[:,:].T
+        ax.pcolormesh(x,y,pdf,cmap='magma')
+        ax.plot(data[:,0], data[:,1], 'o', markersize=2, color='white')
+        pyplot.savefig('2d.pdf')
+        
+
 if __name__ == "__main__":
     KDETest()
+    pyplot.clf()
+    KDE2DTest()
