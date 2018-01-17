@@ -77,7 +77,7 @@ class KDE(object):
         Compute the kernel density estimate of the probability density
         for each point in the vector ``points``.
         '''
-        result = numpy.empty(points.shape, dtype = numpy.float64)
+        result = numpy.empty(points.shape[0], dtype = numpy.float64)
         for idx, p in enumerate(points):
             difference = self.data - p
             scaled_diff = difference/self.h**2
