@@ -1,3 +1,3 @@
 #!/usr/bin/env python
-import kde.kde as kde
-import kde.w_kde as w_kde
+from kde.kde import KDE
+from kde.w_kde import WKDE
