@@ -2,7 +2,7 @@
 import argparse
 import h5py
 import importlib
-import kde
+import kde.kde as kde
 import numpy
 '''
 Interface KDE with WESTPA simulation data. WKDE provides Python interface, and
