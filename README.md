@@ -63,4 +63,4 @@ kde.WKDE(westh5, first_iter=None, last_iter=None, load_func=None, bw=1)
 
 Following initialization, call the `go` method as `<WKDE class instance>.go(points)` to evaluate the kernel density estimate at each point in `points`.  A gaussian kernel is set automatically; to use another kernel, use the `set_kernel_type` method (see documentation for `kde.KDE`) followed by the `evaluate` method.
 
-To interact with WESTPA data from the command line, run `python kde/w_kde.py` include the `-h` or `--help` flag for more information.
+To interact with WESTPA data from the command line, run `python kde/w_kde.py`; include the `-h` or `--help` flag for more information.
