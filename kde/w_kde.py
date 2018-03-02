@@ -121,10 +121,6 @@ class WKDE(kde.KDE):
             # This makes sure data goes in every slot of self.data without
             # overwriting other data.
             arr_idx += n_points
-
-    def go(self, points):
-        self.set_kernel_type('gaussian')
-        return self.evaluate(points)
             
 class WKDETool(WKDE):
     '''
