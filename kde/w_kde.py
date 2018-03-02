@@ -284,7 +284,7 @@ class WKDETool(WKDE):
         self.iter_range = (first_iter, last_iter)
 
     def go(self):
-        result = super(WKDETool, self).go(self.grid)
+        result = self.evaluate(self.grid)
         numpy.savetxt(self.args.output, result)
 
 if __name__ == "__main__":
