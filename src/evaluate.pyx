@@ -9,7 +9,7 @@ cdef extern from "distance.h":
 
 cdef extern from "kernels.h":
     double bump(double x) nogil
-    double cosine_kernel(double x) nogil
+    double cosine_func(double x) nogil
     double epanechnikov(double x) nogil
     double gaussian(double x) nogil
     double logistic(double x) nogil
@@ -45,9 +45,9 @@ def estimate_pdf_brute(query_points, training_points, metric='euclidean_distance
     if kernel == 'bump':
         kernel_func = bump
     elif kernel == 'cosine':
-        kernel_func == cosine_func
+        kernel_func = cosine_func
     elif kernel == 'epanechnikov':
-        kernel_func == epanechnikov
+        kernel_func = epanechnikov
     elif kernel == 'gaussian':
         kernel_func = gaussian
     elif kernel == 'logistic':
