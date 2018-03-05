@@ -20,6 +20,7 @@
  */
 #include <math.h>
 #include <stdlib.h>
+#include "kernels.h"
 
 // Bump (smooth, compact support) kernel
 // gaussian mapped to unit disk
@@ -38,7 +39,8 @@ bump(double x)
 
 // Cosine
 //   must multiply by pi/4
-double cosine_kernel(double x)
+double 
+cosine_kernel(double x)
 {
   if (abs(x) < 1) {
     return cos(M_PI/2*x);
@@ -49,7 +51,8 @@ double cosine_kernel(double x)
 
 // Epanechnikov
 //   must multiply by 3/4
-double epanechnikov(double x)
+double 
+epanechnikov(double x)
 {
   if (abs(x) < 1) {
     return 1-x*x;
@@ -68,14 +71,16 @@ gaussian(double x)
 
 // Logistic
 //   don't need to multiply by anything
-double logistic(double x)
+double 
+logistic(double x)
 {
   return 1/(exp(-x)+2+exp(x));
 }
 
 // Quartic
 //   must multiply by 15/16
-double quartic(double x)
+double 
+quartic(double x)
 {
   if (abs(x) < 1) {
     double y = 1-x*x;
