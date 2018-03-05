@@ -91,12 +91,12 @@ quartic(double x)
 }
 
 // Uniform kernel
-//   don't need to multiply by anything
+//   must multiply by 0.5
 double 
 tophat(double x)
 {
   if (abs(x) < 1){
-    return 0.5;
+    return 1;
   } else{
     return 0;
   }
