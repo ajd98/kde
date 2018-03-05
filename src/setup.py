@@ -9,7 +9,7 @@ include_dir = '../include'
 ext_modules=[
     Extension("evaluate",
         sources=["evaluate.pyx"],
-        libraries=["m", "libkde"],
+        libraries=["m", "kde"],
         library_dirs=[kdedir],
         include_dirs=[include_dir],
         extra_compile_args=["-O3"]
