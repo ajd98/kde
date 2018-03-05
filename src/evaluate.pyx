@@ -103,7 +103,7 @@ def estimate_pdf_brute(query_points, training_points,
     if metric == 'euclidean_distance_ntorus':
        metric_func = euclidean_distance_ntorus
 
-    if not training_points.shape[1] != query_points.shape[1]:
+    if training_points.shape[1] != query_points.shape[1]:
         raise TypeError("Training points and query points must have same "
                         "dimension but have dimension {:d} and {:d}"\
                         .format(training_points.shape[1], query_points.shape[1]))
