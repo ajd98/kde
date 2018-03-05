@@ -8,5 +8,5 @@ double logistic(double x);
 double quartic(double x);
 double tophat(double x);
 double triangle(double x);
-double tricubic(double x);
+double tricube(double x);
 #endif // KERNELS_H
