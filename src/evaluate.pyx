@@ -42,11 +42,40 @@ cdef void _estimate_pdf_brute(double [:,:] query_points,
                                                 ndim))
     return
 
-def estimate_pdf_brute(query_points, training_points, metric='euclidean_distance', kernel='gaussian'):
+def estimate_pdf_brute(query_points, training_points, 
+                       metric='euclidean_distance', kernel='gaussian'):
     '''
+    estimate_pdf_brute(query_points, training_points, 
+                       metric='euclidean_distance', kernel='gaussian')
+
+
     Evaluate the kernel density estimate at ``query_points`` as:
 
           f_hat(x) = 1/n sum(kernel_func(metric_func(x-xi)))
+
+    ----------
+    Parameters
+    ----------
+    query_points: (numpy.ndarray)
+    training_points: (numpy.ndarray)
+    metric: (str) options are 'euclidean_distance' and 'euclidean_distance_ntorus'
+    kernel: (str) options are:
+     - 'bump'
+     - 'cosine'
+     - 'epanechnikov'
+     - 'gaussian'
+     - 'logistic'
+     - 'quartic'
+     - 'tophat'
+     - 'triangle'
+     - 'tricube'
+
+     -------
+     Returns
+     -------
+     result: (numpy.ndarray) The value of the kernel density estimate at each 
+       point in ``query_points``
+
     '''
     # Parse keyword arguments
     if kernel == 'bump':
