@@ -7,7 +7,7 @@ CFLAGS=-I$(IDIR) -Wall -L. -g -std=gnu99 -fPIC
 _DEPS=queue.h 
 DEPS=$(patsubst %,$(IDIR)/%,$(_DEPS))
 
-OBJ = dist.o kernels.o
+OBJ = distance.o kernels.o
 
 %.o: %.c $(DEPS)
 	$(CC) -c -O3 -o $@ $< $(CFLAGS)
