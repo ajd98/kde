@@ -1,6 +1,7 @@
 # cython: profile=True 
 #
 import numpy
+cimport numpy
 
 cdef extern from "distance.h":
     double euclidean_distance(double* u, double* v, int size) nogil
@@ -23,14 +24,16 @@ def _estimate_pdf_brute(query_points, training_points, metric, kernel_func):
 
           f_hat(x) = 1/n sum(kernel_func(metric_func(x-xi)))
     '''
-    int nquerypts = query_points.shape[0]
-    int ntrainingpts = training_points.shape[0]
+    cdef int nquerypts = query_points.shape[0]
+    cdef int ntrainingpts = training_points.shape[0]
     result = numpy.zeros(nquerypts)
+    cdef double [:,:] _query_points = query_points
+    cdef double [:,:] _training_points = training_points
     with nogil:
         for i in range(nquerypts):
             for j in range(ntrainingpts):
-                result[i] += kernel_func(metric(query_points[i], 
-                                                training_points[j]))
+                result[i] += kernel_func(metric(_query_points[i], 
+                                                _training_points[j]))
     return result
 
 def estimate_pdf_brute(query_points, training_points, metric='euclidean_distance', kernel='gaussian'):
@@ -59,9 +62,9 @@ def estimate_pdf_brute(query_points, training_points, metric='euclidean_distance
         kernel_func = tricube
     else:
         raise ValueError("Kernel {:s} not found.".format(kernel))
-    if metric == 'euclidean_distance'
+    if metric == 'euclidean_distance':
        metric_func = euclidean_distance
-    if metric == 'euclidean_distance_ntorus'
+    if metric == 'euclidean_distance_ntorus':
        metric_func = euclidean_distance_ntorus
     result = _estimate_pdf_brute(query_points, training_points, metric_func, kernel_func)
     return result
