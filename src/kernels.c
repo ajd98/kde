@@ -86,7 +86,7 @@ quartic(double x)
     double y = 1-x*x;
     return y*y;
   } else {
-    return 0
+    return 0;
   }
 }
 
