@@ -18,22 +18,23 @@ cdef extern from "kernels.h":
     double triangle(double x) nogil
     double tricube(double x) nogil
 
-def _estimate_pdf_brute(query_points, training_points, metric, kernel_func):
+cdef void _estimate_pdf_brute(double [:,:] query_points, 
+                              double [:,:] training_points, 
+                              double (*)(double *, double *, int) metric,
+                              double (*)(double) kernel_func, 
+                              double[:] result,
+                              int nquery,
+                              int ntrain):
     '''
     Evaluate the kernel density estimate at ``query_points`` as:
 
           f_hat(x) = 1/n sum(kernel_func(metric_func(x-xi)))
     '''
-    cdef int nquerypts = query_points.shape[0]
-    cdef int ntrainingpts = training_points.shape[0]
-    result = numpy.zeros(nquerypts)
-    cdef double [:,:] _query_points = query_points
-    cdef double [:,:] _training_points = training_points
     with nogil:
         for i in range(nquerypts):
             for j in range(ntrainingpts):
-                result[i] += kernel_func(metric(_query_points[i], 
-                                                _training_points[j]))
+                result[i] += kernel_func(metric(query_points[i], 
+                                                training_points[j]))
     return result
 
 def estimate_pdf_brute(query_points, training_points, metric='euclidean_distance', kernel='gaussian'):
@@ -42,6 +43,7 @@ def estimate_pdf_brute(query_points, training_points, metric='euclidean_distance
 
           f_hat(x) = 1/n sum(kernel_func(metric_func(x-xi)))
     '''
+    # Parse keyword arguments
     if kernel == 'bump':
         kernel_func = bump
     elif kernel == 'cosine':
@@ -66,5 +68,15 @@ def estimate_pdf_brute(query_points, training_points, metric='euclidean_distance
        metric_func = euclidean_distance
     if metric == 'euclidean_distance_ntorus':
        metric_func = euclidean_distance_ntorus
-    result = _estimate_pdf_brute(query_points, training_points, metric_func, kernel_func)
-    return result
+
+    # Make memoryviews for use with nogil
+    cdef double [:,:] _query_points = query_points
+    cdef double [:,:] _training_points = training_points
+    cdef double [:] _result = numpy.zeros(query_points.shape[0])
+    cdef int nquery = query_points.shape[0]
+    cdef int ntrain = training_points.shape[0]
+
+    _estimate_pdf_brute(_query_points, _training_points, metric_func, 
+                        kernel_func, _result, nquery, ntrain)
+
+    return numpy.asarray(_result)
