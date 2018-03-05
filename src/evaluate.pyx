@@ -15,7 +15,7 @@ cdef extern from "kernels.h":
     double quartic(double x) nogil
     double tophat(double x) nogil
     double triangle(double x) nogil
-    double tricubic(double x) nogil
+    double tricube(double x) nogil
 
 def _estimate_pdf_brute(query_points, training_points, metric, kernel_func):
     '''
@@ -33,40 +33,35 @@ def _estimate_pdf_brute(query_points, training_points, metric, kernel_func):
                                                 training_points[j]))
     return result
 
-def estimate_pdf_brute(query_points, training_points, metric, kernel_func='gaussian'):
+def estimate_pdf_brute(query_points, training_points, metric='euclidean_distance', kernel='gaussian'):
     '''
     Evaluate the kernel density estimate at ``query_points`` as:
 
           f_hat(x) = 1/n sum(kernel_func(metric_func(x-xi)))
     '''
-    if kernel_func == 'gaussian':
-        result = _estimate_pdf_brute(query_points, training_points, metric, gaussian):
-    if kernel_func == 'bump':
-        result = _estimate_pdf_brute(query_points, training_points, metric, bump):
-    if kernel_func == 'tricubic':
-        result = _estimate_pdf_brute(query_points, training_points, metric, tricubic):
-    if kernel_func == 'tophat':
-        result = _estimate_pdf_brute(query_points, training_points, metric, tophat)
+    if kernel == 'bump':
+        kernel_func = bump
+    elif kernel == 'cosine':
+        kernel_func == cosine_func
+    elif kernel == 'epanechnikov':
+        kernel_func == epanechnikov
+    elif kernel == 'gaussian':
+        kernel_func = gaussian
+    elif kernel == 'logistic':
+        kernel_func = logistic
+    elif kerenl == 'quartic':
+        kernel_func = quartic
+    elif kernel == 'tophat':
+        kernel_func = tophat
+    elif kernel == 'triangle':
+        kernel_func = triangle
+    elif kernel == 'tricube':
+        kernel_func = tricube
+    else:
+        raise ValueError("Kernel {:s} not found.".format(kernel))
+    if metric == 'euclidean_distance'
+       metric_func = euclidean_distance
+    if metric == 'euclidean_distance_ntorus'
+       metric_func = euclidean_distance_ntorus
+    result = _estimate_pdf_brute(query_points, training_points, metric_func, kernel_func)
     return result
-
-                
-def estimate_pdf_gaussian(query_points, training_points, metric):
-    '''
-    Evaluate the kernel density estimate at ``query_points`` as:
-
-          f_hat(x) = 1/n sum(g(metric_func(x-xi)))
-
-    where
-          g(y) = 1/(2*pi*h)*exp(-(y)**2/(2*h))
-    '''
-    return estimate_pdf_brute(query_points, training_points, metric, gaussian)
-
-def estimate_pdf_smooth_compact(query_points, training_points, metric):
-    '''
-    Evaluate the kernel density estimate at ``query_points`` as:
-
-          f_hat(x) = 1/n sum(g(metric_func(x-xi)))
-
-    where
-          g(y) = cos(
-    '''
