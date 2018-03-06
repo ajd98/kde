@@ -27,7 +27,7 @@ cpdef bump_coefficient(n):
     return 1/integral
 
 cpdef cosine_coefficient(n):
-    integral = 2*pow(M_PI,0.5*n)*hyp1f2(0.5*n,0.5,0.5*n+1, -1*M_PI**2/16)[0]/gamma(0.5*n)
+    integral = 2*pow(M_PI,0.5*n)*hyp1f2(0.5*n,0.5,0.5*n+1, -1*M_PI**2/16)[0]/gamma(0.5*n)/n
     return 1/integral
 
 cpdef epanechnikov_coefficient(n):
