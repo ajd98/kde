@@ -6,6 +6,11 @@ import os
 kdedir = os.path.abspath(os.getcwd())
 include_dir = '../include'
 
+setup(
+    ext_modules = cythonize("kernel_coefficients.pyx"),
+    include_dirs=[numpy.get_include()]
+      )
+
 ext_modules=[
     Extension("evaluate",
         sources=["evaluate.pyx"],
@@ -21,5 +26,5 @@ setup(
     name="evaluate",
     ext_modules=cythonize(ext_modules),
     include_dirs=[numpy.get_include()],
-    library_dirs=[kdedir]
 )
+
