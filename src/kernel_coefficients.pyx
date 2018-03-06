@@ -23,7 +23,8 @@ cdef double _bump_1d_integrand(double r, INT32_t n) nogil:
     return exp(1/(r*r-1))*S_n(n,r)
 
 cpdef bump_coefficient(n):
-    return 1/scipy.integrate.quad(_bump_1d_integrand, 0, 1, args=(n,))
+    integral = scipy.integrate.quad(_bump_1d_integrand, 0, 1, args=(n,))[0]
+    return 1/integral
 
 cpdef cosine_coefficient(n):
     integral = 2*pow(M_PI,0.5*n)*hyp1f2(0.5*n,0.5,0.5*n+1, -1*M_PI**2/16)[0]/gamma(0.5*n)
@@ -41,7 +42,7 @@ cdef double _logistic_1d_integrand(double r, INT32_t n) nogil:
     return 1/(exp(-1*r)+2+exp(r))*S_n(n, r)
 
 cpdef logistic_coefficient(n):
-    integral = scipy.integrate.quad(_logistic_1d_integrand)
+    integral = scipy.integrate.quad(_logistic_1d_integrand, 0, 1000, args=(n,))[0]
     return 1/integral
 
 cpdef quartic_coefficient(n):
@@ -53,10 +54,9 @@ cpdef tophat_coefficient(n):
     return 1/integral
 
 cpdef triangle_coefficient(n):
-    integral = M_PI**(0.5*n)/((n+1)*gamma(0.5*n+1))
+    integral = 2*M_PI**(0.5*n)/((n+1)*n*gamma(0.5*n))
     return 1/integral
 
 cpdef tricube_coefficient(n):
     integral = 324*M_PI**(0.5*n)/(n*(n+3)*(n+6)*(n+9)*gamma(0.5*n))
     return 1/integral
-
