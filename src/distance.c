@@ -4,6 +4,17 @@
 #include <math.h>
 #include <stdlib.h>
 
+// arithmetic modulus
+double 
+arithmeticfmod(double x, double d)
+{
+  double angle = fmod(x, d) ;
+  if (angle < 0) {
+    angle += d;
+  }
+  return angle;
+}
+
 // Euclidean distance
 double 
 euclidean_distance(double* v, double* u, int size) 
@@ -28,8 +39,8 @@ euclidean_distance_ntorus(double* v, double* u, int size)
   int i;
   for (i=0;i<size;i++) {
     diff = v[i] - u[i];
-    diff = fmod(diff, 360);
-    diff -= 180;
+    diff = arithmeticfmod(diff, 360);
+    diff = fmin(fabs(diff), fabs(diff-360));
     result += diff*diff;
   }
   return sqrt(result);
