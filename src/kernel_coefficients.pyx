@@ -1,53 +1,62 @@
 # cython: profile=True 
 #
 import numpy
-cimport scipy.special.cython_special
+import scipy.integrate
+from scipy.special import hyp1f2, gamma
 
-from libc.math cimport pow
+cimport numpy
+from scipy.special.cython_special cimport gamma as _gamma
+from libc.math cimport pow, M_PI
 
-hyp1f2 = scipy.special.cython_special.hyp1f2
-gamma = scipy.special.cython_special.gamma
 
 cdef extern from "math.h":
     double exp(double x) nogil
 
 
-cdef double S_n(int n, double r) nogil:
+cdef double S_n(INT32_t n, double r) nogil:
     '''
     The surface area of the sphere in n-dimensions
     '''
-    return 2*pow(M_PI,(0.5*n))*pow(r,(n-1))/gamma(0.5*n)
+    return 2*pow(M_PI,0.5*n)*pow(r,n-1.)/_gamma(0.5*n)
 
-cdef double _bump_1d_integrand(double r, int n) nogil:
-    return exp(1/(pow(r,2)-1))*S_n(n,r)
+cdef double _bump_1d_integrand(double r, INT32_t n) nogil:
+    return exp(1/(r*r-1))*S_n(n,r)
 
-def bump_coefficient(n):
-    return scipy.integrate.quad(_bump_1d_integrand, 0, 1, args=(n,))
+cpdef bump_coefficient(n):
+    return 1/scipy.integrate.quad(_bump_1d_integrand, 0, 1, args=(n,))
 
-def cosine_coefficient(n):
-    return 2*M_PI**(0.5*n)*hyp1f2(0.5*n,0.5,0.5*n+1, -1*M_PI**2/16)/gamma(0.5*n)/n
+cpdef cosine_coefficient(n):
+    integral = 2*pow(M_PI,0.5*n)*hyp1f2(0.5*n,0.5,0.5*n+1, -1*M_PI**2/16)[0]/gamma(0.5*n)
+    return 1/integral
 
-def epanechnikov_coefficient(n):
-    return M_PI**(0.5*n)/gamma(0.5*n+2)
+cpdef epanechnikov_coefficient(n):
+    integral = M_PI**(0.5*n)/gamma(0.5*n+2)
+    return 1/integral
 
-def gaussian_coefficient(n):
-    return (2*numpy.pi)**(0.5*n)
+cpdef gaussian_coefficient(n):
+    integral = (2*numpy.pi)**(0.5*n)
+    return 1/integral
 
-cdef double _logistic_1d_integrand(double r, int n) nogil:
+cdef double _logistic_1d_integrand(double r, INT32_t n) nogil:
     return 1/(exp(-1*r)+2+exp(r))*S_n(n, r)
 
-def logistic_coefficient(n):
-    return scipy.integrate.quad(_logistic_1d_integrand)
+cpdef logistic_coefficient(n):
+    integral = scipy.integrate.quad(_logistic_1d_integrand)
+    return 1/integral
 
-def quartic_coefficient(n):
-    return 16*M_PI**(0.5*n)/(n*(n*n+6*n+8)*gamma(0.5*n))
+cpdef quartic_coefficient(n):
+    integral = 16*M_PI**(0.5*n)/(n*(n*n+6*n+8)*gamma(0.5*n))
+    return 1/integral
 
-def tophat_coefficient(n):
-    return 2*M_PI**(0.5*n)/(n*gamma(0.5*n))
+cpdef tophat_coefficient(n):
+    integral = 2*M_PI**(0.5*n)/(n*gamma(0.5*n))
+    return 1/integral
 
-def triangle_coefficient(n):
-    return M_PI**(0.5*n)/((n+1)*gamma(0.5*n+1))
+cpdef triangle_coefficient(n):
+    integral = M_PI**(0.5*n)/((n+1)*gamma(0.5*n+1))
+    return 1/integral
 
-def tricube_coefficient(n):
-    return 324*M_PI**(0.5*n)/(n*(n+3)*(n+6)*(n+9)*gamma(0.5*n))
+cpdef tricube_coefficient(n):
+    integral = 324*M_PI**(0.5*n)/(n*(n+3)*(n+6)*(n+9)*gamma(0.5*n))
+    return 1/integral
 
