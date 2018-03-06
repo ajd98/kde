@@ -17,7 +17,7 @@ libkde.a: $(OBJ)
 
 kde: libkde.a 
 	python setup.py build_ext --inplace
-	mv *.so ../
+	mv *.so ../kde
 
 install: kde
 
