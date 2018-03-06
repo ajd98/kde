@@ -1,4 +1,4 @@
-# cython: profile=True 
+# cython: boundscheck=False
 #
 import numpy
 cimport numpy
@@ -179,11 +179,13 @@ def estimate_pdf_brute(query_points, training_points, bandwidth=1, weights=None,
         _estimate_pdf_brute(_query_points, _training_points, metric_func, 
                             kernel_func, bandwidth, _result, nquery, ntrain, ndim)
         result = numpy.asarray(_result)*coeff*bandwidth/ntrain
-    else:
-        cdef double[:] _weights = weights
-        _estimate_pdf_brute_weighted(_query_points, _training_points, _weights
-                                     metric_func, kernel_func, bandwidth, 
-                                     _result, nquery, ntrain, ndim)
-        result = numpy.asarray(_result)*coeff*bandwidth/weights.sum()
+        return result
+
+    # Else
+    cdef double[:] _weights = weights
+    _estimate_pdf_brute_weighted(_query_points, _training_points, _weights,
+                                 metric_func, kernel_func, bandwidth, 
+                                 _result, nquery, ntrain, ndim)
+    result = numpy.asarray(_result)*coeff*bandwidth/weights.sum()
 
     return result
