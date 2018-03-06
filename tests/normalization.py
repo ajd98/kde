@@ -9,6 +9,7 @@ import scipy.integrate
 kernels = ['bump',
            'cosine',
            'epanechnikov',
+           'gaussian',
            'logistic', 
            'quartic',
            'tophat',
