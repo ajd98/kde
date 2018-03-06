@@ -53,7 +53,35 @@ cdef void _estimate_pdf_brute(double [:,:] query_points,
     free(xi)
     return
 
-def estimate_pdf_brute(query_points, training_points, bandwidth=1,
+cdef void _estimate_pdf_brute_weighted(double [:,:] query_points, 
+                                       double [:,:] training_points, 
+                                       double [:] weights, 
+                                       METRICFUNC_t metric,
+                                       KERNELFUNC_t kernel_func, 
+                                       double h,
+                                       double[:] result,
+                                       int nquery,
+                                       int ntrain,
+                                       int ndim):
+    '''
+    Evaluate the kernel density estimate at ``query_points`` as:
+
+          f_hat(x) = sum(w*kernel_func(metric_func(x-xi)))
+    '''
+    cdef double* x  = <double *>malloc(ndim*sizeof(double))
+    cdef double* xi = <double *>malloc(ndim*sizeof(double))
+    with nogil:
+        for i in range(nquery):
+            for j in range(ntrain):
+                for k in range(ndim):
+                    x[k] = query_points[i,k]
+                    xi[k] = training_points[j,k]
+                result[i] += weights[j]*kernel_func(metric(x, xi, ndim)/h)
+    free(x)
+    free(xi)
+    return
+
+def estimate_pdf_brute(query_points, training_points, bandwidth=1, weights=None,
                        metric='euclidean_distance', kernel='gaussian'):
     '''
     estimate_pdf_brute(query_points, training_points, 
@@ -70,6 +98,8 @@ def estimate_pdf_brute(query_points, training_points, bandwidth=1,
     query_points: (numpy.ndarray)
     training_points: (numpy.ndarray)
     bandwidth: (float) The bandwidth of the kernel; ``h`` in the equation above.
+    weights: (None or float) Weights for each training point.  If ``None``, 
+      training points are uniformly weighted.
     metric: (str) options are 'euclidean_distance' and 'euclidean_distance_ntorus'
     kernel: (str) options are:
      - 'bump'
@@ -145,7 +175,15 @@ def estimate_pdf_brute(query_points, training_points, bandwidth=1,
     cdef double [:,:] _training_points = training_points
     cdef double [:] _result = numpy.zeros(query_points.shape[0])
 
-    _estimate_pdf_brute(_query_points, _training_points, metric_func, 
-                        kernel_func, bandwidth, _result, nquery, ntrain, ndim)
+    if weights is None:
+        _estimate_pdf_brute(_query_points, _training_points, metric_func, 
+                            kernel_func, bandwidth, _result, nquery, ntrain, ndim)
+        result = numpy.asarray(_result)*coeff*bandwidth/ntrain
+    else:
+        cdef double[:] _weights = weights
+        _estimate_pdf_brute_weighted(_query_points, _training_points, _weights
+                                     metric_func, kernel_func, bandwidth, 
+                                     _result, nquery, ntrain, ndim)
+        result = numpy.asarray(_result)*coeff*bandwidth/weights.sum()
 
-    return numpy.asarray(_result)*coeff*bandwidth/ntrain
+    return result
