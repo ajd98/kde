@@ -141,4 +141,4 @@ def estimate_pdf_brute(query_points, training_points, bandwidth=1,
     _estimate_pdf_brute(_query_points, _training_points, metric_func, 
                         kernel_func, h, _result, nquery, ntrain, ndim)
 
-    return numpy.asarray(_result)*coeff
+    return numpy.asarray(_result)*coeff*h/ntrain
