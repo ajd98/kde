@@ -3,6 +3,7 @@
 import numpy
 cimport numpy
 cimport kernel_coefficients
+from libc.stdlib cimport malloc, free
 
 COMPACT_KERNELS=['bump', 'cosine', 'epanechnikov', 'quartic', 'tophat', 
                  'triangle', 'tricube']
@@ -39,12 +40,17 @@ cdef void _estimate_pdf_brute(double [:,:] query_points,
 
           f_hat(x) = 1/n sum(kernel_func(metric_func(x-xi)))
     '''
+    cdef double* x  = <double *>malloc(ndim*sizeof(double))
+    cdef double* xi = <double *>malloc(ndim*sizeof(double))
     with nogil:
         for i in range(nquery):
             for j in range(ntrain):
-                result[i] += kernel_func(metric(&query_points[i][::1][0], 
-                                                &training_points[j][::1][0],
-                                                ndim)/h)
+                for k in range(ndim):
+                    x[k] = query_points[i,k]
+                    xi[k] = training_points[j,k]
+                result[i] += kernel_func(metric(x, xi, ndim)/h)
+    free(x)
+    free(xi)
     return
 
 def estimate_pdf_brute(query_points, training_points, bandwidth=1,
