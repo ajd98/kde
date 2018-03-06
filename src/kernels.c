@@ -30,7 +30,7 @@
 double
 bump(double x)
 {
-  if (abs(x) < 1){
+  if (fabs(x) < 1){
     return exp(1/(x*x-1));
   } else {
     return 0;
@@ -42,7 +42,7 @@ bump(double x)
 double 
 cosine_kernel(double x)
 {
-  if (abs(x) < 1) {
+  if (fabs(x) < 1) {
     return cos(M_PI/2*x);
   } else {
     return 0;
@@ -54,7 +54,7 @@ cosine_kernel(double x)
 double 
 epanechnikov(double x)
 {
-  if (abs(x) < 1) {
+  if (fabs(x) < 1) {
     return 1-x*x;
   } else {
     return 0;
@@ -82,7 +82,7 @@ logistic(double x)
 double 
 quartic(double x)
 {
-  if (abs(x) < 1) {
+  if (fabs(x) < 1) {
     double y = 1-x*x;
     return y*y;
   } else {
@@ -95,7 +95,7 @@ quartic(double x)
 double 
 tophat(double x)
 {
-  if (abs(x) < 1){
+  if (fabs(x) < 1){
     return 1;
   } else{
     return 0;
@@ -107,7 +107,7 @@ tophat(double x)
 double
 triangle(double x)
 {
-  double y = abs(x);
+  double y = fabs(x);
   if (y < 1) {
     return 1-y;
   } else {
@@ -120,7 +120,7 @@ triangle(double x)
 double
 tricube(double x)
 {
-  double y = abs(x);
+  double y = fabs(x);
   if (y < 1) {
     double z = 1-y*y*y;
     return z*z*z;
