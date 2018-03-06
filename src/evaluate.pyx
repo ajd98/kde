@@ -2,6 +2,7 @@
 #
 import numpy
 cimport numpy
+cimport kernel_coefficients
 
 cdef extern from "distance.h":
     double euclidean_distance(double* u, double* v, int size) nogil
@@ -77,25 +78,43 @@ def estimate_pdf_brute(query_points, training_points,
        point in ``query_points``
 
     '''
+    if training_points.shape[1] != query_points.shape[1]:
+        raise TypeError("Training points and query points must have same "
+                        "dimension but have dimension {:d} and {:d}"\
+                        .format(training_points.shape[1], query_points.shape[1]))
+
+    cdef int nquery = query_points.shape[0]
+    cdef int ntrain = training_points.shape[0]
+    cdef int ndim = training_points.shape[1]
+
     # Parse keyword arguments
     if kernel == 'bump':
         kernel_func = bump
+        coeff = kernel_coefficients.bump_coefficient(ndim)
     elif kernel == 'cosine':
         kernel_func = cosine_kernel
+        coeff = kernel_coefficients.cosine_coefficient(ndim)
     elif kernel == 'epanechnikov':
         kernel_func = epanechnikov
+        coeff = kernel_coefficients.epanechnikov_coefficient(ndim)
     elif kernel == 'gaussian':
         kernel_func = gaussian
+        coeff = kernel_coefficients.gaussian_coefficient(ndim)
     elif kernel == 'logistic':
         kernel_func = logistic
+        coeff = kernel_coefficients.logistic_coefficient(ndim)
     elif kernel == 'quartic':
         kernel_func = quartic
+        coeff = kernel_coefficients.quartic_coefficient(ndim)
     elif kernel == 'tophat':
         kernel_func = tophat
+        coeff = kernel_coefficients.tophat_coefficient(ndim)
     elif kernel == 'triangle':
         kernel_func = triangle
+        coeff = kernel_coefficients.triangle_coefficient(ndim)
     elif kernel == 'tricube':
         kernel_func = tricube
+        coeff = kernel_coefficients.tricube_coefficient(ndim)
     else:
         raise ValueError("Kernel {:s} not found.".format(kernel))
     if metric == 'euclidean_distance':
@@ -103,20 +122,13 @@ def estimate_pdf_brute(query_points, training_points,
     if metric == 'euclidean_distance_ntorus':
        metric_func = euclidean_distance_ntorus
 
-    if training_points.shape[1] != query_points.shape[1]:
-        raise TypeError("Training points and query points must have same "
-                        "dimension but have dimension {:d} and {:d}"\
-                        .format(training_points.shape[1], query_points.shape[1]))
 
     # Make memoryviews for use with nogil
     cdef double [:,:] _query_points = query_points
     cdef double [:,:] _training_points = training_points
     cdef double [:] _result = numpy.zeros(query_points.shape[0])
-    cdef int nquery = query_points.shape[0]
-    cdef int ntrain = training_points.shape[0]
-    cdef int ndim = training_points.shape[1]
 
     _estimate_pdf_brute(_query_points, _training_points, metric_func, 
                         kernel_func, _result, nquery, ntrain, ndim)
 
-    return numpy.asarray(_result)
+    return numpy.asarray(_result)*coeff
