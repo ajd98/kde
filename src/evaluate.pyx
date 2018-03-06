@@ -4,6 +4,9 @@ import numpy
 cimport numpy
 cimport kernel_coefficients
 
+COMPACT_KERNELS=['bump', 'cosine', 'epanechnikov', 'quartic', 'tophat', 
+                 'triangle', 'tricube']
+
 cdef extern from "distance.h":
     double euclidean_distance(double* u, double* v, int size) nogil
     double euclidean_distance_ntorus(double* u, double* v, int size) nogil
@@ -26,6 +29,7 @@ cdef void _estimate_pdf_brute(double [:,:] query_points,
                               double [:,:] training_points, 
                               METRICFUNC_t metric,
                               KERNELFUNC_t kernel_func, 
+                              double h,
                               double[:] result,
                               int nquery,
                               int ntrain,
@@ -40,10 +44,10 @@ cdef void _estimate_pdf_brute(double [:,:] query_points,
             for j in range(ntrain):
                 result[i] += kernel_func(metric(&query_points[i][::1][0], 
                                                 &training_points[j][::1][0],
-                                                ndim))
+                                                ndim)/h)
     return
 
-def estimate_pdf_brute(query_points, training_points, 
+def estimate_pdf_brute(query_points, training_points, bandwidth=1,
                        metric='euclidean_distance', kernel='gaussian'):
     '''
     estimate_pdf_brute(query_points, training_points, 
@@ -52,13 +56,14 @@ def estimate_pdf_brute(query_points, training_points,
 
     Evaluate the kernel density estimate at ``query_points`` as:
 
-          f_hat(x) = 1/n sum(kernel_func(metric_func(x-xi)))
+          f_hat(x) = 1/n sum(kernel_func(metric_func(x-xi)/h))
 
     ----------
     Parameters
     ----------
     query_points: (numpy.ndarray)
     training_points: (numpy.ndarray)
+    bandwidth: (float) The bandwidth of the kernel; ``h`` in the equation above.
     metric: (str) options are 'euclidean_distance' and 'euclidean_distance_ntorus'
     kernel: (str) options are:
      - 'bump'
@@ -121,7 +126,12 @@ def estimate_pdf_brute(query_points, training_points,
        metric_func = euclidean_distance
     if metric == 'euclidean_distance_ntorus':
        metric_func = euclidean_distance_ntorus
-
+       if not kernel in COMPACT_KERNELS:
+           raise ValueError("Kernel {:s} is not compact, and therefore invalid "
+                            "for use with n-torus space.".format(kernel))
+       elif h > 180:
+           raise ValueError("Bandwidth {:f} is too large for use with n-torus "
+                            "space. Bandwidth must be less than or equal to 180.")
 
     # Make memoryviews for use with nogil
     cdef double [:,:] _query_points = query_points
@@ -129,6 +139,6 @@ def estimate_pdf_brute(query_points, training_points,
     cdef double [:] _result = numpy.zeros(query_points.shape[0])
 
     _estimate_pdf_brute(_query_points, _training_points, metric_func, 
-                        kernel_func, _result, nquery, ntrain, ndim)
+                        kernel_func, h, _result, nquery, ntrain, ndim)
 
     return numpy.asarray(_result)*coeff
