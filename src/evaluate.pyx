@@ -129,9 +129,10 @@ def estimate_pdf_brute(query_points, training_points, bandwidth=1,
        if not kernel in COMPACT_KERNELS:
            raise ValueError("Kernel {:s} is not compact, and therefore invalid "
                             "for use with n-torus space.".format(kernel))
-       elif h > 180:
+       elif bandwidth > 180:
            raise ValueError("Bandwidth {:f} is too large for use with n-torus "
-                            "space. Bandwidth must be less than or equal to 180.")
+                            "space. Bandwidth must be less than or equal to 180."\
+                            .format(bandwidth))
 
     # Make memoryviews for use with nogil
     cdef double [:,:] _query_points = query_points
@@ -139,6 +140,6 @@ def estimate_pdf_brute(query_points, training_points, bandwidth=1,
     cdef double [:] _result = numpy.zeros(query_points.shape[0])
 
     _estimate_pdf_brute(_query_points, _training_points, metric_func, 
-                        kernel_func, h, _result, nquery, ntrain, ndim)
+                        kernel_func, bandwidth, _result, nquery, ntrain, ndim)
 
-    return numpy.asarray(_result)*coeff*h/ntrain
+    return numpy.asarray(_result)*coeff*bandwidth/ntrain
