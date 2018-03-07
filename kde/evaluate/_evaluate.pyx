@@ -178,7 +178,7 @@ def estimate_pdf_brute(query_points, training_points, bandwidth=1, weights=None,
     if weights is None:
         _estimate_pdf_brute(_query_points, _training_points, metric_func, 
                             kernel_func, bandwidth, _result, nquery, ntrain, ndim)
-        result = numpy.asarray(_result)*coeff*bandwidth/ntrain
+        result = numpy.asarray(_result)*coeff/ntrain/bandwidth
         return result
 
     # Else
@@ -186,6 +186,6 @@ def estimate_pdf_brute(query_points, training_points, bandwidth=1, weights=None,
     _estimate_pdf_brute_weighted(_query_points, _training_points, _weights,
                                  metric_func, kernel_func, bandwidth, 
                                  _result, nquery, ntrain, ndim)
-    result = numpy.asarray(_result)*coeff*bandwidth/weights.sum()
+    result = numpy.asarray(_result)*coeff/weights.sum()/bandwidth
 
     return result
