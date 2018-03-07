@@ -3,19 +3,19 @@ from distutils.core import setup, Extension
 from Cython.Build import cythonize
 import os
 
-kdedir = os.path.abspath(os.getcwd())
-include_dir = '../../include'
+libdir = os.path.join(os.path.abspath(os.getcwd()), 'kde', 'evaluate')
+include_dir = './include'
 
 setup(
-    ext_modules = cythonize("kernel_coefficients.pyx"),
+    ext_modules = cythonize("kde/evaluate/kernel_coefficients.pyx"),
     include_dirs=[numpy.get_include()]
       )
 
 ext_modules=[
     Extension("kde.evaluate._evaluate",
-        sources=["_evaluate.pyx"],
+        sources=["kde/evaluate/_evaluate.pyx"],
         libraries=["m", "kde"],
-        library_dirs=[kdedir],
+        library_dirs=[libdir],
         include_dirs=[include_dir],
         extra_compile_args=["-O3"]
     )

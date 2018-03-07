@@ -1,2 +1,2 @@
 #!/usr/bin/env python
-from _evaluate import *
+from kde.evaluate._evaluate import *
