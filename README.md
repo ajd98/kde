@@ -58,10 +58,10 @@ Parameters:
 | Parameter | Data type | Description |
 | --------- | --------- | ----------- |
 | `training_points` | `numpy.ndarray` | The values of the samples in ℝⁿ or (S¹)ⁿ = S¹×S¹×...×S¹ |
-| `kernel`  | `string` | The kernel. Options are:<br>  `"bump"`<br>  `"cosine"`<br>  `"epanechnikov"`<br>  `"gaussian"`<br>  `"logistic"`<br>  `"quartic"`<br>  `"tophat"`<br>  `"triangle"`<br>  `"tricube"`. See below for kernel definitions. The Gaussian kernel is given by:<br> _p(x) = 1/√(2πσ) exp(-x<sup>2</sup>/(2σ<sup>2</sup>))_<br><br> The gamma kernel is given by:<br> _p(x) = 1/[Γ(k) θ<sup>k</sup>] x<sup>k-1</sup> exp(-x/θ)_<br><br>with _θ_, _k_ chosen such that the mode of _p_ corresponds with the value of each sample, and the square root of the variance of _p_ is equal to `bw` (described below) |
+| `kernel`  | `string` | The kernel. Options are:<br>  `"bump"`<br>  `"cosine"`<br>  `"epanechnikov"`<br>  `"gaussian"`<br>  `"logistic"`<br>  `"quartic"`<br>  `"tophat"`<br>  `"triangle"`<br>  `"tricube"`<br>See above for kernel definitions. |
 | `weights` | `numpy.ndarray` or `None` | The weights of the samples. If `None`, the samples are uniformly weighted. |
-| `metric`  | `string` | The metric for evaluation of distance between points.  Options are 'euclidean_distance' and 'euclidean_distance_ntorus'. |
-| `bw`      | `float` | The bandwidth of the kernel (σ for gaussian kernel, or square-root of variance of gamma distribution for gamma kernel) |
+| `metric`  | `string` | The norm from which to induce the metric for distance between points.  Options are 'euclidean_distance' and 'euclidean_distance_ntorus'. 'euclidean_distance_ntorus' assumes the sample space is an n-torus (S¹×S¹×...×S¹) where each dimension runs between -180 and 180, and the distance is the minimum euclidean distance to a periodic image.|
+| `bw`      | `float` | The bandwidth of the kernel |
 
 
             
@@ -69,7 +69,7 @@ Methods:
 
 | Method | Description |
 | ------ | ----------- |
-| `set_kernel_type(kernel)` | Set the kernel to `kernel`. Options are `"gaussian"` and `"gamma"`. |
+| `set_kernel_type(kernel)` | Set the kernel to `kernel`. See above for options. |
 | `evaluate(p)` | Evaluate the kernel density estimate at each position of `p`, an _n_-by-_k_ numpy array, where _k_ is the number of features of the samples. |
 
 ### Kernel density estimation with WESTPA data
