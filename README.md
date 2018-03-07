@@ -34,6 +34,10 @@ This package includes the following kernel functions:
 
 In the above definitions, _1_<sub>A</sub> is the indicator function and  _A = {x: ‖x‖ < 1}_.
 
+## Installation
+
+This library requires Numpy, Scipy, and Cython.  In addition, gcc is required for compilation.  To install, run `make` from the directory in which this README file is found.
+
 ## Use
 
 ### Kernel density estimation with arbitrary data
