@@ -77,4 +77,4 @@ class KDE(object):
                                              kernel=self.kernel)
 
         # Return array of same shape as input ``points``
-        return result.reshape(points.shape)
+        return result.reshape(points.shape[0])
