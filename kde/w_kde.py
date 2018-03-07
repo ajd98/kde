@@ -2,8 +2,8 @@
 import argparse
 import h5py
 import importlib
-import kde
 import numpy
+from .base import KDE
 '''
 Interface KDE with WESTPA simulation data. WKDE provides Python interface, and
 WKDETool provides command line interface.
@@ -12,7 +12,7 @@ Run this module from the command lines as ``python w_kde.py --help`` for more
 information on the command line interface.
 '''
 
-class WKDE(kde.KDE):
+class WKDE(KDE):
     '''
     Wrapper class for KDE, providing a way to interface with data from WESTPA
     simulations.

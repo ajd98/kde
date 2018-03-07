@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import sys
 sys.path.append('../')
-sys.path.append('../kde')
 import numpy
 import scipy.integrate
 import kde
