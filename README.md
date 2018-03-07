@@ -10,7 +10,7 @@ This repository provides a Python library for kernel density estimation. In comp
 ## Basics
 Kernel density estimation is a technique for estimation of a probability density function based on empirical data. Suppose we have some observations _xᵢ ∈ V_ where _i = 1, ..., n_ and _V_ is a vector space. Given a norm _q: V → ℝ⁺∪{0}_, a kernel function _K: ℝ → ℝ⁺∪{0}_ with _∫ᵥK(q(x))dx = 1_, and a bandwidth _h ∈ ℝ⁺_, the kernel density estimate _p: V → ℝ⁺∪{0}_ is defined as:
 
-_p(x) := 1/(h*n) ΣᵢK(q(x-xᵢ)/h)_
+_p(x) := 1/(hn) ΣᵢK(q(x-xᵢ)/h)_
 
 Similarly, a weighted version of the kernel density estimate may be defined as:
 
