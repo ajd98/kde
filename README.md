@@ -22,12 +22,12 @@ This package includes the following kernel functions:
 
 | kernel    | equation  | 
 | --------- | --------- | 
-| `bump`    | _p(x) ∝ exp(1/(x²-1))_ |
-| `cosine`  | _p(x) ∝ cos(πx/2)_ |
-| `epanechnikov` | _p(x) ∝ 1-x²_ |
+| `bump`    | _p(x) ∝ exp(1/(x²-1))1_<sub>A</sub> |
+| `cosine`  | _p(x) ∝ cos(πx/2)1_<sub>A</sub> |
+| `epanechnikov` | _p(x) ∝ (1-x²)1_<sub>A</sub> |
 | `gaussian` | _p(x) ∝ exp(-x²/2)_ |
 | `logistic` | _p(x) ∝ 1/(exp(-x)+2+exp(x))_ |
-| `quartic` | _p(x) ∝ (1-x²)²_ |
+| `quartic` | _p(x) ∝ (1-x²)²1_<sub>A</sub> |
 | `tophat` | _p(x) ∝ 1_<sub>A</sub>  |
 | `triangle` | _p(x) ∝ (1-x)1_<sub>A</sub> |
 | `tricube` | _p(x) ∝ (1-x³)³1_<sub>A</sub> |
