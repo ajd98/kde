@@ -27,14 +27,30 @@ def main():
     for kernel in kernels:
         def f(x):
             x = numpy.array((x,))[numpy.newaxis, :]
-            return kde.evaluate.estimate_pdf_brute(x, training_points_1d, kernel=kernel)[0]
+            return kde.evaluate.estimate_pdf_brute(x, training_points_1d, kernel=kernel, bandwidth=1)[0]
         integral = scipy.integrate.quad(f, -20, 20)[0]
     
         if numpy.isclose(integral, 1):
-            print("    Test passed: 1D kernel '{:s}' integrates to {:f}".format(kernel, integral))
+            print("    Test passed: 1D kernel '{:s}' integrates to {:.02f}".format(kernel, integral))
         else:
             print(terminalcolors.FAIL, end='')
-            print("    TEST FAILED: 1D kernel '{:s}' integrates to {:f}.".format(kernel, integral))
+            print("    TEST FAILED: 1D kernel '{:s}' integrates to {:.02f}.".format(kernel, integral))
+            print(terminalcolors.RESET, end='')
+
+    # Test kernel normalization in one dimensional euclidean space
+    print("Testing kernel normalization in 1D Euclidean space, with bandwidth of 2")
+    training_points_1d = numpy.zeros(1)[numpy.newaxis,:]
+    for kernel in kernels:
+        def f(x):
+            x = numpy.array((x,))[numpy.newaxis, :]
+            return kde.evaluate.estimate_pdf_brute(x, training_points_1d, kernel=kernel, bandwidth=2)[0]
+        integral = scipy.integrate.quad(f, -20, 20)[0]
+    
+        if numpy.isclose(integral, 1, atol=0.001):
+            print("    Test passed: 1D kernel '{:s}' integrates to {:.02f}".format(kernel, integral))
+        else:
+            print(terminalcolors.FAIL, end='')
+            print("    TEST FAILED: 1D kernel '{:s}' integrates to {:.02f}.".format(kernel, integral))
             print(terminalcolors.RESET, end='')
     
     # Test kernel normalization in one dimensional euclidean space, with multiple training points
@@ -47,11 +63,11 @@ def main():
         integral = scipy.integrate.quad(f, -20, 20)[0]
     
         if numpy.isclose(integral, 1):
-            print("    Test passed: 1D kernel '{:s}' integrates to {:f} with multiple "
+            print("    Test passed: 1D kernel '{:s}' integrates to {:.02f} with multiple "
                   "training points.".format(kernel, integral))
         else:
             print(terminalcolors.FAIL, end='')
-            print("    TEST FAILED: 1D kernel '{:s}' integrates to {:f} with multiple "
+            print("    TEST FAILED: 1D kernel '{:s}' integrates to {:.02f} with multiple "
                   "training points.".format(kernel, integral))
             print(terminalcolors.RESET, end='')
 
@@ -65,10 +81,10 @@ def main():
         integral = scipy.integrate.quad(f, -180, 180)[0]
     
         if numpy.isclose(integral, 1):
-            print("    Test passed: 1D kernel '{:s}' integrates to {:f}".format(kernel, integral))
+            print("    Test passed: 1D kernel '{:s}' integrates to {:.02f}".format(kernel, integral))
         else:
             print(terminalcolors.FAIL, end='')
-            print("    TEST FAILED: 1D kernel '{:s}' integrates to {:f}.".format(kernel, integral))
+            print("    TEST FAILED: 1D kernel '{:s}' integrates to {:.02f}.".format(kernel, integral))
             print(terminalcolors.RESET, end='')
     
     
@@ -98,10 +114,10 @@ def main():
     
         integral = scipy.integrate.dblquad(f, xmin, xmax, ymin, ymax, epsabs=.01)[0]
         if numpy.isclose(integral, 1, atol=0.01):
-            print("    Test passed: 2D kernel '{:s}' integrates to {:f}".format(kernel, integral))
+            print("    Test passed: 2D kernel '{:s}' integrates to {:.02f}".format(kernel, integral))
         else:
             print(terminalcolors.FAIL, end='')
-            print("    TEST FAILED: 2D kernel '{:s}' integrates to {:f}.".format(kernel, integral))
+            print("    TEST FAILED: 2D kernel '{:s}' integrates to {:.02f}.".format(kernel, integral))
             print(terminalcolors.RESET, end='')
 
     # Test kernel normalization in two dimensional n-torus space
@@ -132,10 +148,10 @@ def main():
 
         integral = integral1 + integral2 + integral3 + integral4
         if numpy.isclose(integral, 1, atol=0.01):
-            print("    Test passed: 2D kernel '{:s}' integrates to {:f}".format(kernel, integral))
+            print("    Test passed: 2D kernel '{:s}' integrates to {:.02f}".format(kernel, integral))
         else:
             print(terminalcolors.FAIL, end='')
-            print("    TEST FAILED: 2D kernel '{:s}' integrates to {:f}.".format(kernel, integral))
+            print("    TEST FAILED: 2D kernel '{:s}' integrates to {:.02f}.".format(kernel, integral))
             print(terminalcolors.RESET, end='')
     
     # Test kernel normalization in three dimensional euclidean space
@@ -157,10 +173,10 @@ def main():
         r = (xmin, xmax)
         integral = scipy.integrate.nquad(f, [r for i in range(3)], opts={'epsabs': .1})[0]
         if numpy.isclose(integral, 1, atol=0.1):
-            print("    Test passed: 3D kernel '{:s}' integrates to {:f}".format(kernel, integral))
+            print("    Test passed: 3D kernel '{:s}' integrates to {:.02f}".format(kernel, integral))
         else:
             print(terminalcolors.FAIL, end='')
-            print("    TEST FAILED: 3D kernel '{:s}' integrates to {:f}.".format(kernel, integral))
+            print("    TEST FAILED: 3D kernel '{:s}' integrates to {:.02f}.".format(kernel, integral))
             print(terminalcolors.RESET, end='')
 
 if __name__ == "__main__":
