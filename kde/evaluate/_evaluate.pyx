@@ -2,7 +2,7 @@
 #
 import numpy
 cimport numpy
-cimport kernel_coefficients
+cimport kde.evaluate.kernel_coefficients
 from libc.stdlib cimport malloc, free
 
 COMPACT_KERNELS=['bump', 'cosine', 'epanechnikov', 'quartic', 'tophat', 
