@@ -4,8 +4,35 @@
 This repository provides a Python library for kernel density estimation. In comparison to other Python implementations of kernel density estimation, key features of this library include:
 
 1. Support for weighted samples
-2. A strictly positive kernel for estimation of probability density functions with support on subsets of R+
+2. A variety of kernels, including a smooth, compact kernel.
 3. Interface for kernel density estimation from WESTPA data sets (https://westpa.github.io/westpa/).
+
+## Basics
+Kernel density estimation is a technique for estimation of a probability density function based on empirical data. Suppose we have some observations _xᵢ ∈ V_ where _i = 1, ..., n_ and _V_ is a vector space. Given a norm _q: V → ℝ⁺∪{0}_, a kernel function _K: ℝ → ℝ⁺∪{0}_ with _∫ᵥK(q(x))dx = 1_, and a bandwidth _h ∈ ℝ⁺_, the kernel density estimate _p: V → ℝ⁺∪{0}_ is defined as:
+
+_p(x) := 1/(h*n) ΣᵢK(q(x-xᵢ)/h)_
+
+Similarly, a weighted version of the kernel density estimate may be defined as:
+
+_p(x) := 1/h ΣᵢwᵢK(q(x-xᵢ)/h)_
+
+where _wᵢ_ is the weight of the i<sup>th</sup> sample, and _Σᵢwᵢ=1_.
+
+This package includes the following kernel functions:
+
+| kernel    | equation  | 
+| --------- | --------- | 
+| `bump`    | _p(x) ∝ exp(1/(x²-1))_ |
+| `cosine`  | _p(x) ∝ cos(πx/2)_ |
+| `epanechnikov` | _p(x) ∝ 1-x²_ |
+| `gaussian` | _p(x) ∝ exp(-x²/2)_ |
+| `logistic` | _p(x) ∝ 1/(exp(-x)+2+exp(x))_ |
+| `quartic` | _p(x) ∝ (1-x²)²_ |
+| `tophat` | _p(x) ∝ 1_<sub>A</sub>  |
+| `triangle` | _p(x) ∝ (1-x)1_<sub>A</sub> |
+| `tricube` | _p(x) ∝ (1-x³)³1_<sub>A</sub> |
+
+In the above definitions, _1_<sub>A</sub> is the indicator function and  _A = {x: ‖x‖ < 1}_.
 
 ## Use
 
@@ -23,17 +50,19 @@ Then, import the `kde` module via Python.
 Kernel density estimation is performed via the `KDE` class, accessible as `kde.KDE`.
 
 ```
-class kde.KDE(data, kernel='gaussian', weights=None, bw=1)
+class kde.KDE(training_points, kernel='gaussian', weights=None, metric='euclidean_distance', bw=1)
 ```
 
 Parameters:
 
 | Parameter | Data type | Description |
 | --------- | --------- | ----------- |
-| `data`    | `numpy.ndarray` | The values of the samples in ℝ2 or ℝ (gaussian kernel) or ℝ+ (gamma kernel) |
-| `kernel`  | `string` | The Kernel. Options are `"gaussian"` and `"gamma"`. The Gaussian kernel is given by:<br> _p(x) = 1/√(2πσ) exp(-x<sup>2</sup>/(2σ<sup>2</sup>))_<br><br> The gamma kernel is given by:<br> _p(x) = 1/[Γ(k) θ<sup>k</sup>] x<sup>k-1</sup> exp(-x/θ)_<br><br>with _θ_, _k_ chosen such that the mode of _p_ corresponds with the value of each sample, and the square root of the variance of _p_ is equal to `bw` (described below) |
+| `training_points` | `numpy.ndarray` | The values of the samples in ℝⁿ or (S¹)ⁿ = S¹×S¹×...×S¹ |
+| `kernel`  | `string` | The kernel. Options are:<br>  `"bump"`<br>  `"cosine"`<br>  `"epanechnikov"`<br>  `"gaussian"`<br>  `"logistic"`<br>  `"quartic"`<br>  `"tophat"`<br>  `"triangle"`<br>  `"tricube"`. See below for kernel definitions. The Gaussian kernel is given by:<br> _p(x) = 1/√(2πσ) exp(-x<sup>2</sup>/(2σ<sup>2</sup>))_<br><br> The gamma kernel is given by:<br> _p(x) = 1/[Γ(k) θ<sup>k</sup>] x<sup>k-1</sup> exp(-x/θ)_<br><br>with _θ_, _k_ chosen such that the mode of _p_ corresponds with the value of each sample, and the square root of the variance of _p_ is equal to `bw` (described below) |
 | `weights` | `numpy.ndarray` or `None` | The weights of the samples. If `None`, the samples are uniformly weighted. |
+| `metric`  | `string` | The metric for evaluation of distance between points.  Options are 'euclidean_distance' and 'euclidean_distance_ntorus'. |
 | `bw`      | `float` | The bandwidth of the kernel (σ for gaussian kernel, or square-root of variance of gamma distribution for gamma kernel) |
+
 
             
 Methods:
