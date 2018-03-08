@@ -27,10 +27,10 @@ This package includes the following kernel functions:
 | kernel    | equation  | 
 | --------- | --------- | 
 | `bump`    | _p(x) ∝ 1_<sub>A</sub>_exp(1/(x²-1))_ |
-| `cosine`  | _p(x) ∝  1_<sub>A</sub>_cos(πx/2)_ |
-| `epanechnikov` | _p(x) ∝  1_<sub>A</sub>_(1-x²)_ |
-| `gaussian` | _p(x) ∝  1_<sub>A</sub>_exp(-x²/2)_ |
-| `logistic` | _p(x) ∝  1_<sub>A</sub>_1/(exp(-x)+2+exp(x))_ |
+| `cosine`  | _p(x) ∝ 1_<sub>A</sub>_cos(πx/2)_ |
+| `epanechnikov` | _p(x) ∝ 1_<sub>A</sub>_(1-x²)_ |
+| `gaussian` | _p(x) ∝ exp(-x²/2)_ |
+| `logistic` | _p(x) ∝ 1/(exp(-x)+2+exp(x))_ |
 | `quartic` | _p(x) ∝ 1_<sub>A</sub>_(1-x²)²_ |
 | `tophat` | _p(x) ∝ 1_<sub>A</sub>  |
 | `triangle` | _p(x) ∝ 1_<sub>A</sub>_(1-x)_ |
