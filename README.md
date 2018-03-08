@@ -4,8 +4,43 @@
 This repository provides a Python library for kernel density estimation. In comparison to other Python implementations of kernel density estimation, key features of this library include:
 
 1. Support for weighted samples
-2. A strictly positive kernel for estimation of probability density functions with support on subsets of R+
+2. A variety of kernels, including a smooth, compact kernel.
 3. Interface for kernel density estimation from WESTPA data sets (https://westpa.github.io/westpa/).
+
+## Basics
+Kernel density estimation is a technique for estimation of a probability density function based on empirical data. Suppose we have some observations _xᵢ ∈ V_ where _i = 1, ..., n_ and _V_ is some feature space, typically ℝᵈ. Given a metric _𝒹: V × V → ℝ⁺∪{0}_, a kernel function _K: ℝ → ℝ⁺∪{0}_ with _∀ x ∈ V_, _∫ᵥK(𝒹(x,y))dy = 1_, and a bandwidth _h ∈ ℝ⁺_, the kernel density estimate _p: V → ℝ⁺∪{0}_ is defined as:
+
+_p(x) := 1/(hn) ΣᵢK(𝒹(x,xᵢ)/h)_
+
+This library simplifies calculation by including only a set of metrics _𝒹_ that may be expressed as _𝒹(x,xᵢ) = q(x-xᵢ)_ for some norm _q:V → ℝ⁺∪{0}_:
+
+_p(x) := 1/(hn) ΣᵢK(q(x-xᵢ)/h)_
+
+Similarly, a weighted version of the kernel density estimate may be defined as:
+
+_p(x) := 1/h ΣᵢwᵢK(q(x-xᵢ)/h)_
+
+where _wᵢ_ is the weight of the i<sup>th</sup> sample, and _Σᵢwᵢ=1_.
+
+This package includes the following kernel functions:
+
+| kernel    | equation  | 
+| --------- | --------- | 
+| `bump`    | _p(x) ∝ 1_<sub>A</sub>_exp(1/(x²-1))_ |
+| `cosine`  | _p(x) ∝ 1_<sub>A</sub>_cos(πx/2)_ |
+| `epanechnikov` | _p(x) ∝ 1_<sub>A</sub>_(1-x²)_ |
+| `gaussian` | _p(x) ∝ exp(-x²/2)_ |
+| `logistic` | _p(x) ∝ 1/(exp(-x)+2+exp(x))_ |
+| `quartic` | _p(x) ∝ 1_<sub>A</sub>_(1-x²)²_ |
+| `tophat` | _p(x) ∝ 1_<sub>A</sub>  |
+| `triangle` | _p(x) ∝ 1_<sub>A</sub>_(1-‖x‖)_ |
+| `tricube` | _p(x) ∝ 1_<sub>A</sub>_(1-‖x‖³)³_ |
+
+In the above definitions, _1_<sub>A</sub> is the indicator function and  _A = {x: ‖x‖ < 1}_.
+
+## Installation
+
+This library requires Numpy, Scipy, and Cython.  In addition, gcc is required for compilation.  To install, run `make` from the directory in which this README file is found.
 
 ## Use
 
@@ -23,24 +58,26 @@ Then, import the `kde` module via Python.
 Kernel density estimation is performed via the `KDE` class, accessible as `kde.KDE`.
 
 ```
-class kde.KDE(data, kernel='gaussian', weights=None, bw=1)
+class kde.KDE(training_points, kernel='gaussian', weights=None, metric='euclidean_distance', bw=1)
 ```
 
 Parameters:
 
 | Parameter | Data type | Description |
 | --------- | --------- | ----------- |
-| `data`    | `numpy.ndarray` | The values of the samples in ℝ2 or ℝ (gaussian kernel) or ℝ+ (gamma kernel) |
-| `kernel`  | `string` | The Kernel. Options are `"gaussian"` and `"gamma"`. The Gaussian kernel is given by:<br> _p(x) = 1/√(2πσ) exp(-x<sup>2</sup>/(2σ<sup>2</sup>))_<br><br> The gamma kernel is given by:<br> _p(x) = 1/[Γ(k) θ<sup>k</sup>] x<sup>k-1</sup> exp(-x/θ)_<br><br>with _θ_, _k_ chosen such that the mode of _p_ corresponds with the value of each sample, and the square root of the variance of _p_ is equal to `bw` (described below) |
+| `training_points` | `numpy.ndarray` | The values of the samples in ℝⁿ or (S¹)ⁿ = S¹×S¹×...×S¹ |
+| `kernel`  | `string` | The kernel. Options are:<br>  `"bump"`<br>  `"cosine"`<br>  `"epanechnikov"`<br>  `"gaussian"`<br>  `"logistic"`<br>  `"quartic"`<br>  `"tophat"`<br>  `"triangle"`<br>  `"tricube"`<br>See above for kernel definitions. |
 | `weights` | `numpy.ndarray` or `None` | The weights of the samples. If `None`, the samples are uniformly weighted. |
-| `bw`      | `float` | The bandwidth of the kernel (σ for gaussian kernel, or square-root of variance of gamma distribution for gamma kernel) |
+| `metric`  | `string` | The norm from which to induce the metric for distance between points.  Options are 'euclidean_distance' and 'euclidean_distance_ntorus'. 'euclidean_distance_ntorus' assumes the sample space is an n-torus (S¹×S¹×...×S¹) where each dimension runs between -180 and 180, and the distance is the minimum euclidean distance to a periodic image.|
+| `bw`      | `float` | The bandwidth of the kernel |
+
 
             
 Methods:
 
 | Method | Description |
 | ------ | ----------- |
-| `set_kernel_type(kernel)` | Set the kernel to `kernel`. Options are `"gaussian"` and `"gamma"`. |
+| `set_kernel_type(kernel)` | Set the kernel to `kernel`. See above for options. |
 | `evaluate(p)` | Evaluate the kernel density estimate at each position of `p`, an _n_-by-_k_ numpy array, where _k_ is the number of features of the samples. |
 
 ### Kernel density estimation with WESTPA data
@@ -63,4 +100,4 @@ kde.WKDE(westh5, first_iter=None, last_iter=None, load_func=None, bw=1)
 
 Following initialization, call the `evaluate` method as `<WKDE class instance>.evaluate(points)` to evaluate the kernel density estimate at each point in `points`.  A gaussian kernel is set automatically; to use another kernel, use the `set_kernel_type` method (see documentation for `kde.KDE`) followed by the `evaluate` method.
 
-To interact with WESTPA data from the command line, run `python kde/w_kde.py`; include the `-h` or `--help` flag for more information.
+To interact with WESTPA data from the command line, run `python -m kde.w_kde`; include the `-h` or `--help` flag for more information.
