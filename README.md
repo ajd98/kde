@@ -8,7 +8,7 @@ This repository provides a Python library for kernel density estimation. In comp
 3. Interface for kernel density estimation from WESTPA data sets (https://westpa.github.io/westpa/).
 
 ## Basics
-Kernel density estimation is a technique for estimation of a probability density function based on empirical data. Suppose we have some observations _xᵢ ∈ V_ where _i = 1, ..., n_ and _V_ is some feature space, typically ℝᵈ. Given a metric _𝒹: V × V → ℝ⁺∪{0}_, a kernel function _K: ℝ → ℝ⁺∪{0}_ with _∫ᵥK(q(x))dx = 1_, and a bandwidth _h ∈ ℝ⁺_, the kernel density estimate _p: V → ℝ⁺∪{0}_ is defined as:
+Kernel density estimation is a technique for estimation of a probability density function based on empirical data. Suppose we have some observations _xᵢ ∈ V_ where _i = 1, ..., n_ and _V_ is some feature space, typically ℝᵈ. Given a metric _𝒹: V × V → ℝ⁺∪{0}_, a kernel function _K: ℝ → ℝ⁺∪{0}_ with _∀ x ∈ V_, _∫ᵥK(𝒹(x,y))dy = 1_, and a bandwidth _h ∈ ℝ⁺_, the kernel density estimate _p: V → ℝ⁺∪{0}_ is defined as:
 
 _p(x) := 1/(hn) ΣᵢK(𝒹(x,xᵢ)/h)_
 
