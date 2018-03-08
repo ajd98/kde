@@ -8,7 +8,11 @@ This repository provides a Python library for kernel density estimation. In comp
 3. Interface for kernel density estimation from WESTPA data sets (https://westpa.github.io/westpa/).
 
 ## Basics
-Kernel density estimation is a technique for estimation of a probability density function based on empirical data. Suppose we have some observations _xᵢ ∈ V_ where _i = 1, ..., n_ and _V_ is a vector space. Given a norm _q: V → ℝ⁺∪{0}_, a kernel function _K: ℝ → ℝ⁺∪{0}_ with _∫ᵥK(q(x))dx = 1_, and a bandwidth _h ∈ ℝ⁺_, the kernel density estimate _p: V → ℝ⁺∪{0}_ is defined as:
+Kernel density estimation is a technique for estimation of a probability density function based on empirical data. Suppose we have some observations _xᵢ ∈ V_ where _i = 1, ..., n_ and _V_ is some feature space, typically ℝᵈ. Given a metric _𝒹: V × V → ℝ⁺∪{0}_, a kernel function _K: ℝ → ℝ⁺∪{0}_ with _∫ᵥK(q(x))dx = 1_, and a bandwidth _h ∈ ℝ⁺_, the kernel density estimate _p: V → ℝ⁺∪{0}_ is defined as:
+
+_p(x) := 1/(hn) ΣᵢK(𝒹(x,xᵢ)/h)_
+
+This library simplifies calculation by including only a set of metrics _𝒹_ that may be expressed as _𝒹(x,xᵢ) = q(x-xᵢ)_ for some norm _q:V → ℝ⁺∪{0}_:
 
 _p(x) := 1/(hn) ΣᵢK(q(x-xᵢ)/h)_
 
@@ -22,15 +26,15 @@ This package includes the following kernel functions:
 
 | kernel    | equation  | 
 | --------- | --------- | 
-| `bump`    | _p(x) ∝ exp(1/(x²-1))1_<sub>A</sub> |
-| `cosine`  | _p(x) ∝ cos(πx/2)1_<sub>A</sub> |
-| `epanechnikov` | _p(x) ∝ (1-x²)1_<sub>A</sub> |
-| `gaussian` | _p(x) ∝ exp(-x²/2)_ |
-| `logistic` | _p(x) ∝ 1/(exp(-x)+2+exp(x))_ |
-| `quartic` | _p(x) ∝ (1-x²)²1_<sub>A</sub> |
+| `bump`    | _p(x) ∝ 1_<sub>A</sub>_exp(1/(x²-1))_ |
+| `cosine`  | _p(x) ∝  1_<sub>A</sub>_cos(πx/2)_ |
+| `epanechnikov` | _p(x) ∝  1_<sub>A</sub>_(1-x²)_ |
+| `gaussian` | _p(x) ∝  1_<sub>A</sub>_exp(-x²/2)_ |
+| `logistic` | _p(x) ∝  1_<sub>A</sub>_1/(exp(-x)+2+exp(x))_ |
+| `quartic` | _p(x) ∝ 1_<sub>A</sub>_(1-x²)²_ |
 | `tophat` | _p(x) ∝ 1_<sub>A</sub>  |
-| `triangle` | _p(x) ∝ (1-x)1_<sub>A</sub> |
-| `tricube` | _p(x) ∝ (1-x³)³1_<sub>A</sub> |
+| `triangle` | _p(x) ∝ 1_<sub>A</sub>_(1-x)_ |
+| `tricube` | _p(x) ∝ 1_<sub>A</sub>_(1-x³)³_ |
 
 In the above definitions, _1_<sub>A</sub> is the indicator function and  _A = {x: ‖x‖ < 1}_.
 
