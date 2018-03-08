@@ -33,8 +33,8 @@ This package includes the following kernel functions:
 | `logistic` | _p(x) ∝ 1/(exp(-x)+2+exp(x))_ |
 | `quartic` | _p(x) ∝ 1_<sub>A</sub>_(1-x²)²_ |
 | `tophat` | _p(x) ∝ 1_<sub>A</sub>  |
-| `triangle` | _p(x) ∝ 1_<sub>A</sub>_(1-x)_ |
-| `tricube` | _p(x) ∝ 1_<sub>A</sub>_(1-x³)³_ |
+| `triangle` | _p(x) ∝ 1_<sub>A</sub>_(1-‖x‖)_ |
+| `tricube` | _p(x) ∝ 1_<sub>A</sub>_(1-‖x‖³)³_ |
 
 In the above definitions, _1_<sub>A</sub> is the indicator function and  _A = {x: ‖x‖ < 1}_.
 
