@@ -38,6 +38,11 @@ This package includes the following kernel functions:
 
 In the above definitions, _1_<sub>A</sub> is the indicator function and  _A = {x: ‖x‖ < 1}_.
 
+For more information on the mathematical theory of kernel density estimation, see the following references:
+
+1. Rosenblatt, Murray. Remarks on Some Nonparametric Estimates of a Density Function. _Ann. Math. Statist_. 27 (1956), no. 3, 832–837. [doi:10.1214/aoms/1177728190](https://doi.org/10.1214/aoms/1177728190).
+2. Parzen, Emanuel. On Estimation of a Probability Density Function and Mode. _Ann. Math. Statist_. 33 (1962), no. 3, 1065–1076. [doi:10.1214/aoms/1177704472](https://doi.org/10.1214/aoms/1177704472).
+
 ## Installation
 
 This library requires Numpy, Scipy, and Cython.  In addition, gcc is required for compilation.  To install, run `make` from the directory in which this README file is found.
