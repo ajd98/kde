@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <cuda_runtime.h>
 #include <helper_cuda.h>
+#include "kernels.cuh"
 
 // Types for device function pointers
 typedef double (*METRICFUNC_t)(const double*, const double*, int)
@@ -58,7 +59,7 @@ _evaluate(const double* query_points,
   if strcmp(kernel_func_s, "bump") {
     kernel_func = bump;
   } else if strcmp(kernel_func_s, "cosine") {
-    kernel_func = cosine_func;
+    kernel_func = cosine_kernel;
   } else if strcmp(kernel_func_s, "epanechnikov") {
     kernel_func = epanechnikov;
   } else if strcmp(kernel_func_s, "gaussian") {
