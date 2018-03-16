@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <cuda_runtime.h>
 #include "kernels.cuh"
+#include "distance.cuh"
 
 // kernel options
 enum kernelopt{BUMP, COSINE, EPANECHNIKOV, GAUSSIAN, 
