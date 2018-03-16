@@ -7,7 +7,7 @@ from libc.stdlib cimport malloc, free
 COMPACT_KERNELS=['bump', 'cosine', 'epanechnikov', 'quartic', 'tophat', 
                  'triangle', 'tricube']
 
-cdef extern from "_evaluate.cuh":
+cdef extern from "_evaluate.h":
     void cuda_evaluate(const double* query_points,
                        const double* training_points, 
                        const double* weights,
