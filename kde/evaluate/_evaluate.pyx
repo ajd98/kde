@@ -175,54 +175,17 @@ def estimate_pdf_brute(query_points, training_points, bandwidth=1, weights=None,
     cdef double [:,:] _training_points = training_points
     cdef double [:] _result = numpy.zeros(query_points.shape[0])
 
-    if weights is None and not cuda:
+    if weights is None:
         _estimate_pdf_brute(_query_points, _training_points, metric_func, 
                             kernel_func, bandwidth, _result, nquery, ntrain, ndim)
         result = numpy.asarray(_result)*coeff/ntrain/bandwidth
         return result
 
     # Else
-    if weights is None:
-        weights = numpy.ones(ntrain, dtype=numpy.float64)/ntrain
     cdef double[:] _weights = weights
-    if not cuda:
-        _estimate_pdf_brute_weighted(_query_points, _training_points, _weights,
-                                     metric_func, kernel_func, bandwidth, 
-                                     _result, nquery, ntrain, ndim)
-        result = numpy.asarray(_result)*coeff/weights.sum()/bandwidth
-        return result
+    _estimate_pdf_brute_weighted(_query_points, _training_points, _weights,
+                                 metric_func, kernel_func, bandwidth, 
+                                 _result, nquery, ntrain, ndim)
+    result = numpy.asarray(_result)*coeff/weights.sum()/bandwidth
 
-    ###### Wrapper for CUDA ######
-    #if cuda, initialize c-style arrays. The double-underscore arrays denote
-    # c-style buffers
-    cdef double* __query_points = <double*>malloc(nquery*ndim*sizeof(double))
-    cdef double* __training_points = <double*>malloc(ntrain*ndim*sizeof(double))
-    cdef double* __weights = <double*>malloc(ntrain*sizeof(double))
-    cdef double* __result = <double*>malloc(nquery*sizeof(double))
-    cdef char* __metric = metric
-    cdef char* __kernel = kernel
-
-    # assign values to arrays
-    for i in range(nquery):
-        for j in range(ndim):
-            __query_points[ndim*i+j] = query_points[i,j]
-    for i in range(ntrain):
-        for j in range(ndim):
-            __training_points[ndim*i+j] = training_points[i,j]
-    for i in range(ntrain):
-        __weights[i] = weights[i]
-    for i in range(result):
-        __result[i] = 0
-
-    _evaluate_cu(__query_points, __training_points, __weights, __metric, 
-                 __kernel, bandwidth, __result, nquery, ntrain, ndim)
-
-    for i in range(result):
-        _result[i] = __result[i]
-    free(__query_points)
-    free(__training_points)
-    free(__weights)
-    free(__result)
-    return numpy.asarray(_result)*coeff/weights.sum()/bandwidth
-
-
+    return result
