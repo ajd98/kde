@@ -117,7 +117,7 @@ def estimate_pdf_brute(query_points, training_points, bandwidth=1, weights=None,
     cuda_evaluate(__query_points, __training_points, __weights, __metric, 
                   __kernel, bandwidth, __result, nquery, ntrain, ndim)
 
-    result = numpy.zeros(query_points.shape)
+    result = numpy.zeros(nquery)
     for i in range(nquery):
         result[i] = __result[i]
     free(__query_points)
