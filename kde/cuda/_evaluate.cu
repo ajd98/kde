@@ -98,7 +98,7 @@ cuda_evaluate(const double* query_points,
     exit(EXIT_FAILURE);
   }
   
-  enum kernelopt kernel
+  enum kernelopt kernel;
   if (strcmp(kernel_s, "bump") == 0) {
     kernel = BUMP;
   } else if (strcmp(kernel_s, "cosine") == 0) {
@@ -125,6 +125,7 @@ cuda_evaluate(const double* query_points,
 
   // Allocate device memory 
   double *d_query_points = NULL;
+  cudaError_t err;
   err = cudaMalloc((void **)&d_query_points, ndim*nquery*sizeof(double));
   if (err != cudaSuccess) {
     fprintf(stderr, "Failed to allocate device array ``query_points`` (error code %s)!\n", cudaGetErrorString(err));
