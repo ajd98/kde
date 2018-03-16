@@ -10,7 +10,7 @@ enum metricopt{EUCLIDEAN_DISTANCE, EUCLIDEAN_DISTANCE_NTORUS};
 
 // Types for device function pointers
 typedef double (*KERNELFUNC_t)(double);
-typedef double (*METRICFUNC_t)(double*, double*, int);
+typedef double (*METRICFUNC_t)(const double*, const double*, int);
 
 // Cuda kernel for evaluating kernel density estimate
 __global__ void

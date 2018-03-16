@@ -17,7 +17,7 @@ arithmeticfmod(double x, double d)
 
 // Euclidean distance
 __device__ double 
-euclidean_distance(double* v, double* u, int size) 
+euclidean_distance(const double* v, const double* u, int size) 
 {
   double result = 0;
   double diff;
@@ -32,7 +32,7 @@ euclidean_distance(double* v, double* u, int size)
 // Euclidean distance in S1 x S1 x ... x S1 (an n-Torus)
 // points are equivalent mod 360
 __device__ double 
-euclidean_distance_ntorus(double* v, double* u, int size) 
+euclidean_distance_ntorus(const double* v, const double* u, int size) 
 {
   double result = 0;
   double diff;
