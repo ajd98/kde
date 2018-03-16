@@ -73,14 +73,14 @@ _evaluate_cu(const double* query_points,
 
 // Wrapper for cuda kernel
 void
-_evaluate(const double* query_points,
-          const double* training_points, 
-          const double* weights,
-          char* metric_s,
-          char* kernel_s,
-          double h, 
-          double* result,
-          int nquery, int ntrain, int ndim)
+cuda_evaluate(const double* query_points,
+              const double* training_points, 
+              const double* weights,
+              char* metric_s,
+              char* kernel_s,
+              double h, 
+              double* result,
+              int nquery, int ntrain, int ndim)
 {
   // query_points and training_points are "2d" arrays indexed as
   //    "query_points[i,j]" = query_points[ndim*i+j]
@@ -179,7 +179,7 @@ _evaluate(const double* query_points,
   int threadsPerBlock = 256;
   int blocksPerGrid =(nquery + threadsPerBlock - 1) / threadsPerBlock;
   printf("CUDA kernel launch with %d blocks of %d threads\n", blocksPerGrid, threadsPerBlock);
-  _evaluateCu<<<blocksPerGrid, threadsPerBlock>>>(d_query_points, d_training_points, d_weights, metric, kernel, h, d_result, nquery, ntrain, ndim);
+  _evaluate_cu<<<blocksPerGrid, threadsPerBlock>>>(d_query_points, d_training_points, d_weights, metric, kernel, h, d_result, nquery, ntrain, ndim);
   err = cudaGetLastError();
   if (err != cudaSuccess) {
     fprintf(stderr, "Failed to launch kernel (error code %s)!\n", cudaGetErrorString(err));
