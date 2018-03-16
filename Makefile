@@ -9,7 +9,7 @@ all: $(SUBDIRS) _evaluate.so
 _evaluate.so: 
 	python setup.py build_ext --inplace
 
-cuda: $(CU_SUBDIRS)
+cuda: all $(CU_SUBDIRS)
 	python setup_cu.py build_ext --inplace
 
 $(SUBDIRS):
