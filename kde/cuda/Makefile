@@ -1,14 +1,18 @@
 # Makefile for cuda kde
+NVCCFLAGS = -arch=compute_30 #--compiler-options '-fPIC'
 
 all: libcukde.a
 
 OBJ = distance.o kernels.o _evaluate.o
 
-%.o: %.cu
-	nvcc -c -O3 --compiler-options '-fPIC' -arch=compute_30 -I../../include/ -o $@ $< 
+devicelib.o: $(OBJ)
+	nvcc $(NVCCFLAGS) -dlink -o devicelib.o $(OBJ)
 
-libcukde.a: $(OBJ)
-	ar cr libcukde.a $(OBJ)
+%.o: %.cu
+	nvcc $(NVCCFLAGS) -O3 -I../../include/ -dc $@ $<
+
+libcukde.a: devicelib.o
+	ar cr libcukde.a $(OBJ) devicelib.o
 
 uninstall:
 	rm *.a *.o
