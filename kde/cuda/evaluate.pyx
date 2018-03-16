@@ -1,7 +1,7 @@
 # cython: boundscheck=False
 #
 import numpy
-cimport kde.evaluate.kernel_coefficients as kernel_coefficients
+import kde.evaluate.kernel_coefficients as kernel_coefficients
 from libc.stdlib cimport malloc, free
 
 COMPACT_KERNELS=['bump', 'cosine', 'epanechnikov', 'quartic', 'tophat', 
