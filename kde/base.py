@@ -50,7 +50,7 @@ class KDE(object):
                              .format(kernel, repr(self.kernels)))
         self.kernel = kernel
 
-    def evaluate(self, points):
+    def evaluate(self, points, cuda=False):
         '''
         Evaluate the kernel density estimate at each point in ``points``
         '''
@@ -70,11 +70,19 @@ class KDE(object):
                     "must be the same.".format(points_.shape[1],
                                                self.training_points.shape[1]))
 
-        result = evaluate.estimate_pdf_brute(points_, self.training_points,
-                                             bandwidth=self.bw, 
-                                             weights=self.weights,
-                                             metric=self.metric,
-                                             kernel=self.kernel)
+        if cuda:
+            import kde.cuda.evaluate as cuda_evaluate
+            result = cuda_evaluate.estimate_pdf_brute(points_, self.training_points,
+                                                      bandwidth=self.bw, 
+                                                      weights=self.weights,
+                                                      metric=self.metric,
+                                                      kernel=self.kernel)
+        else:
+            result = evaluate.estimate_pdf_brute(points_, self.training_points,
+                                                 bandwidth=self.bw, 
+                                                 weights=self.weights,
+                                                 metric=self.metric,
+                                                 kernel=self.kernel)
 
         # Return array of same shape as input ``points``
         return result.reshape(points.shape[0])
