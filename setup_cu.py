@@ -13,7 +13,7 @@ ext_modules=[
         library_dirs=[libdir],
         include_dirs=include_dirs,
         extra_compile_args=["-O3"],
-        extra_link_args=["-Wall", "-Wl,--no-undefined"],
+        extra_link_args=["-Wall"],
     )
 ]
 
