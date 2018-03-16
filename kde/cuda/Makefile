@@ -2,9 +2,14 @@
 
 all: libcukde.a
 
-libcukde.a: 
-	nvcc -lib --compiler-options '-fPIC' -arch=compute_30 -O3 -o $@ _evaluate.cu  -I../../include/
+OBJ = distance.o kernels.o _evaluate.o
+
+%.o: %.cu
+	nvcc -c -O3 --compiler-options '-fPIC' -arch=compute_30 -I../../include/ -o $@ $< 
+
+libcukde.a: $(OBJ)
+	ar cr libcukde.a $(OBJ)
 
 uninstall:
-	rm *.a 
+	rm *.a *.o
 
