@@ -1,5 +1,5 @@
 # Makefile for cuda kde
-NVCCFLAGS = -arch=compute_30 -shared --compiler-options '-fPIC'
+NVCCFLAGS = -arch=compute_20 -shared --compiler-options '-fPIC'
 
 all: libcukde.a
 
