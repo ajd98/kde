@@ -45,22 +45,31 @@ _evaluate_cu(const double* query_points,
   switch(kernel_idx) {
     case BUMP:
       kernel = bump;
+      break;
     case COSINE:
       kernel = cosine_kernel;
+      break;
     case EPANECHNIKOV:
       kernel = epanechnikov;
+      break;
     case GAUSSIAN:
       kernel = gaussian;
+      break;
     case LOGISTIC:
       kernel = logistic;
+      break;
     case QUARTIC:
       kernel = quartic;
+      break;
     case TOPHAT:
       kernel = tophat;
+      break;
     case TRIANGLE:
       kernel = triangle;
+      break;
     case TRICUBE:
       kernel = tricube;
+      break;
   }
 
   if (iquery<nquery) {
@@ -123,7 +132,6 @@ cuda_evaluate(const double* query_points,
     exit(EXIT_FAILURE);
   }
 
-
   // Allocate device memory 
   double *d_query_points = NULL;
   cudaError_t err;
@@ -182,7 +190,6 @@ cuda_evaluate(const double* query_points,
   // Run the cuda kernel
   int threadsPerBlock = 256;
   int blocksPerGrid =(nquery + threadsPerBlock - 1) / threadsPerBlock;
-  printf("CUDA kernel launch with %d blocks of %d threads\n", blocksPerGrid, threadsPerBlock);
   _evaluate_cu<<<blocksPerGrid, threadsPerBlock>>>(d_query_points, d_training_points, d_weights, metric, kernel, h, d_result, nquery, ntrain, ndim);
   err = cudaGetLastError();
   if (err != cudaSuccess) {
