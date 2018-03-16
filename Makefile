@@ -2,17 +2,23 @@
 include Makefile.inc
 
 SUBDIRS := kde/evaluate
+CU_SUBDIRS := kde/cuda
 
 all: $(SUBDIRS) _evaluate.so
 
 _evaluate.so: 
 	python setup.py build_ext --inplace
 
-	
+cuda: $(CU_SUBDIRS)
+	python setup_cu.py build_ext --inplace
 
 $(SUBDIRS):
 	$(MAKE) -C $@
 
+$(CU_SUBDIRS):
+	$(MAKE) -C $@
+
+
 uninstall: $(SUBDIRS)
 
-.PHONY: $(SUBDIRS)
+.PHONY: $(SUBDIRS) $(CU_SUBDIRS) cuda all
