@@ -1,6 +1,6 @@
 #ifndef EVALUATE_CU_H
 #define EVALUATE_CU_H
-void
+extern "C" void
 cuda_evaluate(const double* query_points,
               const double* training_points, 
               const double* weights,
