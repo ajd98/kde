@@ -59,7 +59,7 @@ _evaluate_cu(const double* query_points,
     case TRIANGLE:
       kernel = triangle;
     case TRICUBE:
-      kernel = TRICUBE;
+      kernel = tricube;
   }
 
   if (iquery<nquery) {
