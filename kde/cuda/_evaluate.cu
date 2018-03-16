@@ -10,6 +10,7 @@ enum metricopt{EUCLIDEAN_DISTANCE, EUCLIDEAN_DISTANCE_NTORUS};
 
 // Types for device function pointers
 typedef double (*KERNELFUNC_t)(double);
+typedef double (*METRICFUNC_t)(double*, double*, int);
 
 // Cuda kernel for evaluating kernel density estimate
 __global__ void
@@ -31,7 +32,7 @@ _evaluate_cu(const double* query_points,
   int iquery = blockDim.x * blockIdx.x + threadIdx.x;
   int itrain;
 
-  switch(metricopt) {
+  switch(metric_idx) {
     case EUCLIDEAN_DISTANCE:
       distance = euclidean_distance;
     case EUCLIDEAN_DISTANCE_NTORUS:
@@ -39,7 +40,7 @@ _evaluate_cu(const double* query_points,
   }
 
   KERNELFUNC_t kernel;
-  switch(kernelopt) {
+  switch(kernel_idx) {
     case BUMP:
       kernel = bump;
     case COSINE:
@@ -65,7 +66,7 @@ _evaluate_cu(const double* query_points,
       // Recall that training_points and query_points are 2d arrays that we are
       // thinking of as 1d arrays.  That is, training_points[ndim*itrain] is the
       // ``itrain``th  vector of length ``ndim``
-      result[iquery] += weights[itrain] * kernel(distance(training_points[ndim*itrain], query_points[ndim*iquery], ndim)/h);
+      result[iquery] += weights[itrain] * kernel(distance(&training_points[ndim*itrain], &query_points[ndim*iquery], ndim)/h);
     }
     result[iquery] /= h;
   }
