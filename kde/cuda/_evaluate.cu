@@ -3,29 +3,69 @@
 #include <helper_cuda.h>
 #include "kernels.cuh"
 
+// kernel options
+enum kernelopt{BUMP, COSINE, EPANECHNIKOV, GAUSSIAN, 
+               LOGISTIC, TOPHAT, TRIANGLE, TRICUBE};
+enum metricopt{EUCLIDEAN_DISTANCE, EUCLIDEAN_DISTANCE_NTORUS};
+
 // Types for device function pointers
 typedef double (*METRICFUNC_t)(const double*, const double*, int)
 typedef double (*KERNELFUNC_t)(double)
 
 // Cuda kernel for evaluating kernel density estimate
 __global__ void
-_evaluateCu(const double* query_points, 
-            const double* training_points, 
-            METRICFUNC_t metric,
-            KERNELFUNC_t kernel_func,
-            double h, 
-            double* result,
-            int nquery, int ntrain, int ndim)
+_evaluate_cu(const double* query_points, 
+             const double* training_points, 
+             const double* weights,
+             enum metricopt metric_idx,
+             enum kernelopt kernel_idx,
+             double h, 
+             double* result,
+             int nquery, int ntrain, int ndim)
 {
-  // query_points and training_points are "2d" arrays indexed as
-  //    "query_points[i,j]" = query_points[ndim*i+j]
+  /* query_points and training_points are "2d" arrays indexed as
+   *   "query_points[i,j]" = query_points[ndim*i+j]
+   */
+        
 
   // Each thread operates on its own element of query_points
   int iquery = blockDim.x * blockIdx.x + threadIdx.x;
   int itrain;
+
+  switch(metricopt) {
+    case EUCLIDEAN_DISTANCE:
+      distance = euclidean_distance;
+    case EUCLIDEAN_DISTANCE_NTORUS:
+      distance = euclidean_distance_ntorus;
+  }
+
+  switch(kernelopt) {
+    case BUMP:
+      kernel = bump;
+    case COSINE:
+      kernel = cosine_kernel;
+    case EPANECHNIKOV:
+      kernel = epanechnikov;
+    case GAUSSIAN:
+      kernel = gaussian;
+    case LOGISITIC:
+      kernel = logistic;
+    case QUARTIC:
+      kernel = quartic;
+    case TOPHAT:
+      kernel = tophat;
+    case TRIANGLE:
+      kernel = triangle;
+    case TRICUBE:
+      kernel = TRICUBE;
+  }
+
   if (iquery<nquery) {
     for (itrain=0;itrain<ntrain;itrain++) {
-      result[iquery] += kernel(distance(training_points[itrain], query_points[iquery])/h);
+      // Recall that training_points and query_points are 2d arrays that we are
+      // thinking of as 1d arrays.  That is, training_points[ndim*itrain] is the
+      // ``itrain``th  vector of length ``ndim``
+      result[iquery] += weights[itrain] * kernel(distance(training_points[ndim*itrain], query_points[ndim*iquery], ndim)/h);
     }
     result[iquery] /= h;
   }
@@ -35,8 +75,9 @@ _evaluateCu(const double* query_points,
 void
 _evaluate(const double* query_points,
           const double* training_points, 
+          const double* weights,
           char* metric_s,
-          char* kernel_func_s,
+          char* kernel_s,
           double h, 
           double* result,
           int nquery, int ntrain, int ndim)
@@ -45,37 +86,37 @@ _evaluate(const double* query_points,
   //    "query_points[i,j]" = query_points[ndim*i+j]
 
   // Parse ``metric_s`` and ``kernel_func_s``
-  METRICFUNC_t metric;
+  enum metricopt metric;
   if strcmp(metric_s, "euclidean_distance") {
-    metric = euclidean_distance;
+    metric = EUCLIDEAN_DISTANCE;
   } else if strcmp(metric_s, "eucldiean_distance_ntorus") {
-    metric = euclidean_distance_ntorus;
+    metric = EUCLIDEAN_DISTANCE_NTORUS;
   } else {
     printf("Metric ``%s`` not implemented.", metric_s);
     exit(EXIT_FAILURE);
   }
   
-  KERNELFUNC_t kernel_func;
-  if strcmp(kernel_func_s, "bump") {
-    kernel_func = bump;
-  } else if strcmp(kernel_func_s, "cosine") {
-    kernel_func = cosine_kernel;
-  } else if strcmp(kernel_func_s, "epanechnikov") {
-    kernel_func = epanechnikov;
-  } else if strcmp(kernel_func_s, "gaussian") {
-    kernel_func = gaussian;
-  } else if strcmp(kernel_func_s, "logistic") {
-    kernel_func = logistic;
-  } else if strcmp(kernel_func_s, "quartic") {
-    kernel_func = quartic;
-  } else if strcmp(kernel_func_s, "tophat") {
-    kernel_func = tophat;
-  } else if strcmp(kernel_func_s, "triangle") {
-    kernel_func = triangle;
-  } else if strcmp(kernel_func_s, "tricube") {
-    kernel_func = tricube;
+  enum kernelopt kernel
+  if strcmp(kernel_s, "bump") {
+    kernel = BUMP;
+  } else if strcmp(kernel_s, "cosine") {
+    kernel = COSINE;
+  } else if strcmp(kernel_s, "epanechnikov") {
+    kernel = EPANECHNIKOV;
+  } else if strcmp(kernel_s, "gaussian") {
+    kernel = GAUSSIAN;
+  } else if strcmp(kernel_s, "logistic") {
+    kernel = LOGISTIC;
+  } else if strcmp(kernel_s, "quartic") {
+    kernel = QUARTIC;
+  } else if strcmp(kernel_s, "tophat") {
+    kernel = TOPHAT;
+  } else if strcmp(kernel_s, "triangle") {
+    kernel = TRIANGLE;
+  } else if strcmp(kernel_s, "tricube") {
+    kernel = TRICUBE;
   } else {
-    printf("Kernel ``%s`` not implemented.", kernel_func_s);
+    printf("Kernel ``%s`` not implemented.", kernel_s);
     exit(EXIT_FAILURE);
   }
 
@@ -99,6 +140,12 @@ _evaluate(const double* query_points,
     fprintf(stderr, "Failed to allocate device array ``result`` (error code %s)!\n", cudaGetErrorString(err));
     exit(EXIT_FAILURE);
   }
+  double *d_weights = NULL;
+  err = cudaMalloc((void **)&d_weights, ntrain*sizeof(double));
+  if (err != cudaSuccess) {
+    fprintf(stderr, "Failed to allocate device array ``weights`` (error code %s)!\n", cudaGetErrorString(err));
+    exit(EXIT_FAILURE);
+  }
 
   // Copy ``query_points`` and ``training_points`` into device memory
   err = cudaMemcpy(d_query_points, query_points, nquery*sizeof(double), cudaMemcpyHostToDevice);
@@ -109,6 +156,11 @@ _evaluate(const double* query_points,
   err = cudaMemcpy(d_training_points, training_points, ntrain*sizeof(double), cudaMemcpyHostToDevice);
   if (err != cudaSuccess) {
     fprintf(stderr, "Failed to copy array ``training_points`` from host to device (error code %s)!\n", cudaGetErrorString(err));
+    exit(EXIT_FAILURE);
+  }
+  err = cudaMemcpy(d_weights, weights, ntrain*sizeof(double), cudaMemcpyHostToDevice);
+  if (err != cudaSuccess) {
+    fprintf(stderr, "Failed to copy array ``weights`` from host to device (error code %s)!\n", cudaGetErrorString(err));
     exit(EXIT_FAILURE);
   }
 
@@ -127,7 +179,7 @@ _evaluate(const double* query_points,
   int threadsPerBlock = 256;
   int blocksPerGrid =(nquery + threadsPerBlock - 1) / threadsPerBlock;
   printf("CUDA kernel launch with %d blocks of %d threads\n", blocksPerGrid, threadsPerBlock);
-  _evaluateCu<<<blocksPerGrid, threadsPerBlock>>>(d_query_points, d_training_points, metric, kernel_func, h, d_result, nquery, ntrain, ndim);
+  _evaluateCu<<<blocksPerGrid, threadsPerBlock>>>(d_query_points, d_training_points, d_weights, metric, kernel, h, d_result, nquery, ntrain, ndim);
   err = cudaGetLastError();
   if (err != cudaSuccess) {
     fprintf(stderr, "Failed to launch kernel (error code %s)!\n", cudaGetErrorString(err));
