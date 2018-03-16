@@ -32,6 +32,7 @@ _evaluate_cu(const double* query_points,
   int iquery = blockDim.x * blockIdx.x + threadIdx.x;
   int itrain;
 
+  METRICFUNC_t distance;
   switch(metric_idx) {
     case EUCLIDEAN_DISTANCE:
       distance = euclidean_distance;
