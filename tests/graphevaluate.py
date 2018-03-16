@@ -21,9 +21,11 @@ matplotlib.rcParams['font.size'] = 7
 
 training_points_1d = numpy.zeros(1)[numpy.newaxis,:]
 query_points = numpy.linspace(-5,5,201)[:,numpy.newaxis]
+estimator = kde.KDE(training_points_1d)
 for ikernel, kernel in enumerate(kernels):
     ax = fig.add_subplot(gs[ikernel,0])
-    ys = kde.evaluate.estimate_pdf_brute(query_points, training_points_1d, kernel=kernel)
+    estimator.set_kernel_type(kernel)
+    ys = estimator.evaluate(query_points, cuda=True)
     ax.plot(query_points, ys)
     ax.set_xlim(query_points.min(), query_points.max())
     ax.set_ylim(0,1)
@@ -36,13 +38,14 @@ training_points_2d = numpy.zeros(2)[numpy.newaxis,:]
 X = numpy.linspace(-2,2,101)[:,numpy.newaxis]
 Y = numpy.linspace(-2,2,101)[:,numpy.newaxis]
 X, Y = numpy.meshgrid(X, Y)
+query_pts = numpy.vstack((X.ravel(), Y.ravel())).T
 
+estimator = kde.KDE(training_points_2d)
 gs = gridspec.GridSpec(int(numpy.ceil(len(kernels)/2.)),2, hspace=0.5)
 for ikernel, kernel in enumerate(kernels):
     ax = fig.add_subplot(gs[ikernel//2,ikernel%2], projection='3d')
-    query_pts = numpy.vstack((X.ravel(), Y.ravel())).T
-    Z = kde.evaluate.estimate_pdf_brute(query_pts, training_points_2d, 
-                                        kernel=kernel)
+    estimator.set_kernel_type(kernel)
+    Z = estimator.evaluate(query_pts, cuda=True)
     ax.plot_surface(X, Y, Z.reshape(X.shape[0], -1).T)
     ax.set_xlim(X.min(), X.max())
     ax.set_ylim(Y.min(), Y.max())
