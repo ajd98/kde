@@ -3,16 +3,18 @@ from distutils.core import setup, Extension
 from Cython.Build import cythonize
 import os
 
-libdir = os.path.join(os.path.abspath(os.getcwd()), 'kde', 'cuda')
+libdirs = [os.path.join(os.path.abspath(os.getcwd()), 'kde', 'cuda'),
+           "/opt/cuda/lib64"]
 include_dirs = ['./include', './kde/cuda']
 
 ext_modules=[
     Extension("kde.cuda.evaluate",
         sources=["kde/cuda/evaluate.pyx"],
-        libraries=["m", "cukde"],
-        library_dirs=[libdir],
+        libraries=["m", "cukde", "cuda", "cudart"],
+        library_dirs=libdirs,
         include_dirs=include_dirs,
         extra_compile_args=["-O3"],
+        extra_objects=['kde/cuda/libcukde.a'],
         extra_link_args=["-Wall"],
     )
 ]

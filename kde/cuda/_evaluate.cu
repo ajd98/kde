@@ -2,6 +2,7 @@
 #include <cuda_runtime.h>
 #include "kernels.cuh"
 #include "distance.cuh"
+#include "_evaluate.cuh"
 
 // kernel options
 enum kernelopt{BUMP, COSINE, EPANECHNIKOV, GAUSSIAN, 
@@ -74,7 +75,7 @@ _evaluate_cu(const double* query_points,
 }
 
 // Wrapper for cuda kernel
-void
+extern "C" void
 cuda_evaluate(const double* query_points,
               const double* training_points, 
               const double* weights,
