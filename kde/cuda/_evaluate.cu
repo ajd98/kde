@@ -89,9 +89,9 @@ cuda_evaluate(const double* query_points,
 
   // Parse ``metric_s`` and ``kernel_func_s``
   enum metricopt metric;
-  if strcmp(metric_s, "euclidean_distance") {
+  if (strcmp(metric_s, "euclidean_distance") == 0){
     metric = EUCLIDEAN_DISTANCE;
-  } else if strcmp(metric_s, "eucldiean_distance_ntorus") {
+  } else if (strcmp(metric_s, "eucldiean_distance_ntorus") == 0) {
     metric = EUCLIDEAN_DISTANCE_NTORUS;
   } else {
     printf("Metric ``%s`` not implemented.", metric_s);
@@ -99,23 +99,23 @@ cuda_evaluate(const double* query_points,
   }
   
   enum kernelopt kernel
-  if strcmp(kernel_s, "bump") {
+  if (strcmp(kernel_s, "bump") == 0) {
     kernel = BUMP;
-  } else if strcmp(kernel_s, "cosine") {
+  } else if (strcmp(kernel_s, "cosine") == 0) {
     kernel = COSINE;
-  } else if strcmp(kernel_s, "epanechnikov") {
+  } else if (strcmp(kernel_s, "epanechnikov") == 0) {
     kernel = EPANECHNIKOV;
-  } else if strcmp(kernel_s, "gaussian") {
+  } else if (strcmp(kernel_s, "gaussian") == 0) {
     kernel = GAUSSIAN;
-  } else if strcmp(kernel_s, "logistic") {
+  } else if (strcmp(kernel_s, "logistic") == 0) {
     kernel = LOGISTIC;
-  } else if strcmp(kernel_s, "quartic") {
+  } else if (strcmp(kernel_s, "quartic") == 0) {
     kernel = QUARTIC;
-  } else if strcmp(kernel_s, "tophat") {
+  } else if (strcmp(kernel_s, "tophat") == 0) {
     kernel = TOPHAT;
-  } else if strcmp(kernel_s, "triangle") {
+  } else if (strcmp(kernel_s, "triangle") == 0) {
     kernel = TRIANGLE;
-  } else if strcmp(kernel_s, "tricube") {
+  } else if (strcmp(kernel_s, "tricube") == 0) {
     kernel = TRICUBE;
   } else {
     printf("Kernel ``%s`` not implemented.", kernel_s);
