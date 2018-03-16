@@ -1,4 +1,4 @@
-#ifndef
+#ifndef EVALUATE_CU_H
 #define EVALUATE_CU_H
 void
 _evaluate_cu(const double* query_points, 
