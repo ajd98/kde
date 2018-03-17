@@ -96,9 +96,17 @@ def estimate_pdf_brute(query_points, training_points, bandwidth=1, weights=None,
     #if cuda, initialize c-style arrays. The double-underscore arrays denote
     # c-style buffers
     cdef double* __query_points = <double*>malloc(nquery*ndim*sizeof(double))
+    if __query_points == NULL:
+        raise MemoryError("Failed to allocate __query_points")
     cdef double* __training_points = <double*>malloc(ntrain*ndim*sizeof(double))
+    if __training_points == NULL:
+        raise MemoryError("Failed to allocate __training_points")
     cdef double* __weights = <double*>malloc(ntrain*sizeof(double))
+    if __weights == NULL:
+        raise MemoryError("Failed to allocate __weights")
     cdef double* __result = <double*>malloc(nquery*sizeof(double))
+    if __result == NULL:
+        raise MemoryError("Failed to allocate __result")
     cdef char* __metric = metric
     cdef char* __kernel = kernel
 
