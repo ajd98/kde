@@ -160,12 +160,12 @@ cuda_evaluate(const double* query_points,
   }
 
   // Copy ``query_points`` and ``training_points`` into device memory
-  err = cudaMemcpy(d_query_points, query_points, nquery*sizeof(double), cudaMemcpyHostToDevice);
+  err = cudaMemcpy(d_query_points, query_points, ndim*nquery*sizeof(double), cudaMemcpyHostToDevice);
   if (err != cudaSuccess) {
     fprintf(stderr, "Failed to copy array ``query_points`` from host to device (error code %s)!\n", cudaGetErrorString(err));
     exit(EXIT_FAILURE);
   }
-  err = cudaMemcpy(d_training_points, training_points, ntrain*sizeof(double), cudaMemcpyHostToDevice);
+  err = cudaMemcpy(d_training_points, training_points, ndim*ntrain*sizeof(double), cudaMemcpyHostToDevice);
   if (err != cudaSuccess) {
     fprintf(stderr, "Failed to copy array ``training_points`` from host to device (error code %s)!\n", cudaGetErrorString(err));
     exit(EXIT_FAILURE);
