@@ -101,7 +101,7 @@ cuda_evaluate(const double* query_points,
   enum metricopt metric;
   if (strcmp(metric_s, "euclidean_distance") == 0){
     metric = EUCLIDEAN_DISTANCE;
-  } else if (strcmp(metric_s, "eucldiean_distance_ntorus") == 0) {
+  } else if (strcmp(metric_s, "euclidean_distance_ntorus") == 0) {
     metric = EUCLIDEAN_DISTANCE_NTORUS;
   } else {
     printf("Metric ``%s`` not implemented.", metric_s);
