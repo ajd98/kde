@@ -86,6 +86,28 @@ def test_1d_euclidean_multiple_training(cuda=False):
                   "training points.".format(kernel, integral))
             print(terminalcolors.RESET, end='')
 
+def test_1d_euclidean_complex(cuda=False):
+    # Test kernel normalization in one dimensional euclidean space
+    print("Testing kernel normalization in 1D Euclidean space with alternate "
+          "training set.")
+    training_points_1d = numpy.array((0,0,1,2,5,-4))
+    estimator = kde.KDE(training_points_1d, bw=1)
+    for kernel in kernels:
+        estimator.set_kernel_type(kernel)
+        def f(x):
+            x = numpy.array((x,))[numpy.newaxis, :]
+            return estimator.evaluate(x, cuda=cuda)[0]
+        integral = scipy.integrate.quad(f, -20, 20)[0]
+    
+        if numpy.isclose(integral, 1):
+            print("    Test passed: 1D kernel '{:s}' integrates to {:.02f}"\
+                  .format(kernel, integral))
+        else:
+            print(terminalcolors.FAIL, end='')
+            print("    TEST FAILED: 1D kernel '{:s}' integrates to {:.02f}."\
+                  .format(kernel, integral))
+            print(terminalcolors.RESET, end='')
+
 def test_1d_euclidean_ntorus(cuda=False):
     # Test kernel normalization in one dimensional n-Torus space
     print("Testing kernel normalization in 1D n-Torus space, with multiple "
@@ -223,6 +245,7 @@ def main():
     test_1d_euclidean(cuda=args.cuda)
     test_1d_euclidean_bw2(cuda=args.cuda)
     test_1d_euclidean_multiple_training(cuda=args.cuda)
+    test_1d_euclidean_complex(cuda=args.cuda)
     test_1d_euclidean_ntorus(cuda=args.cuda)
     test_2d_euclidean(cuda=args.cuda)
     test_2d_euclidean_ntorus(cuda=args.cuda)
