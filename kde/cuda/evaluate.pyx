@@ -132,4 +132,4 @@ def estimate_pdf_brute(query_points, training_points, bandwidth=1, weights=None,
     free(__training_points)
     free(__weights)
     free(__result)
-    return result*coeff/weights.sum()/bandwidth
+    return result*coeff/weights.sum()
