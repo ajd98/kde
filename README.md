@@ -85,7 +85,7 @@ Methods:
 | Method | Description |
 | ------ | ----------- |
 | `set_kernel_type(kernel)` | Set the kernel to `kernel`. See above for options. |
-| `evaluate(p)` | Evaluate the kernel density estimate at each position of `p`, an _n_-by-_k_ numpy array, where _k_ is the number of features of the samples. |
+| `evaluate(p, cuda=False)` | Evaluate the kernel density estimate at each position of `p`, an _m_-by-_k_ numpy array, where _m_ is the number of samples and _k_ is the number of features. If `cuda=True`, use the CUDA backend (requires compilation with the `cuda` option; see Installation above). |
 
 ### Kernel density estimation with WESTPA data
 
