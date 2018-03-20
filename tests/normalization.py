@@ -24,11 +24,12 @@ def test_1d_euclidean(cuda=False):
     # Test kernel normalization in one dimensional euclidean space
     print("Testing kernel normalization in 1D Euclidean space")
     training_points_1d = numpy.zeros(1)[numpy.newaxis,:]
+    estimator = kde.KDE(training_points_1d, bw=1)
     for kernel in kernels:
+        estimator.set_kernel_type(kernel)
         def f(x):
             x = numpy.array((x,))[numpy.newaxis, :]
-            return kde.evaluate.estimate_pdf_brute(x, training_points_1d, 
-                           kernel=kernel, bandwidth=1, cuda=cuda)[0]
+            return estimator.evaluate(x, cuda=cuda)[0]
         integral = scipy.integrate.quad(f, -20, 20)[0]
     
         if numpy.isclose(integral, 1):
@@ -45,11 +46,12 @@ def test_1d_euclidean_bw2(cuda=False):
     print("Testing kernel normalization in 1D Euclidean space, with bandwidth "
           "of 2")
     training_points_1d = numpy.zeros(1)[numpy.newaxis,:]
+    estimator = kde.KDE(training_points_1d, bw=2)
     for kernel in kernels:
+        estimator.set_kernel_type(kernel)
         def f(x):
             x = numpy.array((x,))[numpy.newaxis, :]
-            return kde.evaluate.estimate_pdf_brute(x, training_points_1d, 
-                          kernel=kernel, bandwidth=2, cuda=cuda)[0]
+            return estimator.evaluate(x, cuda=cuda)[0]
         integral = scipy.integrate.quad(f, -20, 20)[0]
     
         if numpy.isclose(integral, 1, atol=0.001):
@@ -67,11 +69,12 @@ def test_1d_euclidean_multiple_training(cuda=False):
     print("Testing kernel normalization in 1D Euclidean space, with multiple "
           " training points")
     training_points_1d = numpy.zeros(10)[:, numpy.newaxis]
+    estimator = kde.KDE(training_points_1d, bw=1)
     for kernel in kernels:
+        estimator.set_kernel_type(kernel)
         def f(x):
             x = numpy.array((x,))[numpy.newaxis, :]
-            return kde.evaluate.estimate_pdf_brute(x, training_points_1d, 
-                           kernel=kernel, cuda=cuda)[0]
+            return estimator.evaluate(x, cuda=cuda)[0]
         integral = scipy.integrate.quad(f, -20, 20)[0]
     
         if numpy.isclose(integral, 1):
@@ -88,11 +91,13 @@ def test_1d_euclidean_ntorus(cuda=False):
     print("Testing kernel normalization in 1D n-Torus space, with multiple "
           "training points")
     training_points_1d = 180*numpy.ones(1)[:, numpy.newaxis]
+    estimator = kde.KDE(training_points_1d, bw=1, 
+                        metric='euclidean_distance_ntorus')
     for kernel in compactkernels:
+        estimator.set_kernel_type(kernel)
         def f(x):
             x = numpy.array((x,))[numpy.newaxis, :]
-            return kde.evaluate.estimate_pdf_brute(x, training_points_1d, 
-                kernel=kernel, metric='euclidean_distance_ntorus', cuda=cuda)[0]
+            return estimator.evaluate(x, cuda=cuda)[0]
         integral = scipy.integrate.quad(f, -180, 180)[0]
     
         if numpy.isclose(integral, 1):
@@ -108,7 +113,9 @@ def test_2d_euclidean(cuda=False):
     # Test kernel normalization in two dimensional euclidean space
     print("Testing kernel normalization in 2D Euclidean space")
     training_points_2d = numpy.zeros(2)[numpy.newaxis,:]
+    estimator = kde.KDE(training_points_2d, bw=1)
     for kernel in kernels:
+        estimator.set_kernel_type(kernel)
         if kernel in ['logistic', 'gaussian']:
             def ymin(x):
                 return -10
@@ -127,8 +134,7 @@ def test_2d_euclidean(cuda=False):
     
         def f(x, y):
             x = numpy.array((x,y))[numpy.newaxis, :]
-            return kde.evaluate.estimate_pdf_brute(x, training_points_2d, 
-                                                   kernel=kernel, cuda=cuda)[0]
+            return estimator.evaluate(x, cuda=cuda)[0]
     
         integral = scipy.integrate.dblquad(f, xmin, xmax, ymin, ymax, epsabs=.01)[0]
         if numpy.isclose(integral, 1, atol=0.01):
@@ -144,7 +150,9 @@ def test_2d_euclidean_ntorus(cuda=False):
     # Test kernel normalization in two dimensional n-torus space
     print("Testing kernel normalization in 2-torus space")
     training_points_2d = 180*numpy.ones(2)[numpy.newaxis,:]
+    estimator = kde.KDE(training_points_2d, bw=1, metric='euclidean_distance_ntorus')
     for kernel in compactkernels:
+        estimator.set_kernel_type(kernel)
         def ymin1(x):
             return -180
         def ymax1(x):
@@ -160,8 +168,7 @@ def test_2d_euclidean_ntorus(cuda=False):
     
         def f(x, y):
             x = numpy.array((x,y))[numpy.newaxis, :]
-            return kde.evaluate.estimate_pdf_brute(x, training_points_2d, 
-                kernel=kernel, metric='euclidean_distance_ntorus', cuda=cuda)[0]
+            return estimator.evaluate(x, cuda=cuda)[0]
     
         integral1 = scipy.integrate.dblquad(f, xmin1, xmax1, ymin1, ymax1, epsabs=.01)[0]
         integral2 = scipy.integrate.dblquad(f, xmin1, xmax1, ymin2, ymax2, epsabs=.01)[0]
@@ -178,11 +185,13 @@ def test_2d_euclidean_ntorus(cuda=False):
                   .format(kernel, integral))
             print(terminalcolors.RESET, end='')
 
-def test_3d_euclidean(cuda=False)
+def test_3d_euclidean(cuda=False):
     # Test kernel normalization in three dimensional euclidean space
     print("Testing kernel normalization in 3D Euclidean space")
     training_points_3d = numpy.zeros(3)[numpy.newaxis,:]
+    estimator = kde.KDE(training_points_3d, bw=1)
     for kernel in kernels:
+        estimator.set_kernel_type(kernel)
         if kernel in ['logistic', 'gaussian']:
             xmin = -10
             xmax = 10
@@ -193,8 +202,7 @@ def test_3d_euclidean(cuda=False)
     
         def f(x, y, z):
             x = numpy.array((x,y,z))[numpy.newaxis, :]
-            return kde.evaluate.estimate_pdf_brute(x, training_points_3d, 
-                                                   kernel=kernel, cuda=cuda)[0]
+            return estimator.evaluate(x, cuda=cuda)[0]
     
         r = (xmin, xmax)
         integral = scipy.integrate.nquad(f, [r for i in range(3)], opts={'epsabs': .1})[0]
@@ -209,9 +217,9 @@ def test_3d_euclidean(cuda=False)
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-cuda', dest=cuda, action='store_true',
+    parser.add_argument('-cuda', dest='cuda', action='store_true',
                         help="Run tests using cuda backend.")
-    args = parser.parse_arguments()
+    args = parser.parse_args()
     test_1d_euclidean(cuda=args.cuda)
     test_1d_euclidean_bw2(cuda=args.cuda)
     test_1d_euclidean_multiple_training(cuda=args.cuda)
