@@ -60,9 +60,9 @@ def test2d(cuda=False):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-cuda', dest=cuda, action='store_true',
+    parser.add_argument('-cuda', dest='cuda', action='store_true',
                         help="Run tests using cuda backend.")
-    args = parser.parse_arguments()
+    args = parser.parse_args()
     test1d(cuda=args.cuda)
     test2d(cuda=args.cuda)
     
