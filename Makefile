@@ -18,8 +18,7 @@ $(SUBDIRS):
 $(CU_SUBDIRS):
 	$(MAKE) -C $@
 
-
 uninstall: 
 	git clean -fd
 
-.PHONY: $(SUBDIRS) $(CU_SUBDIRS) cuda all
+.PHONY: $(SUBDIRS) $(CU_SUBDIRS) cuda all uninstall
