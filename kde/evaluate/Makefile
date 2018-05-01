@@ -11,6 +11,7 @@ all: libkde.a
 libkde.a: $(OBJ)
 	ar cr libkde.a $(OBJ)
 
-uninstall:
-	rm *.so *.a *.o
+clean:
+	-rm *.so *.a *.o
 
+.PHONY: all clean

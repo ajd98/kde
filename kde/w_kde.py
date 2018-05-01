@@ -219,6 +219,11 @@ class WKDETool(WKDE):
                                  'applicable) the rows indexing the data point,'
                                  ' and the columns indexing the dimension.'
                             )
+        parser.add_argument('--cuda', action='store_true', dest=cuda,
+                            help="If this flag is provided, use the CUDA "
+                                 "backend for evaluation of the kernel density "
+                                 "estimate."
+                            )
 
 
         self.args = parser.parse_args() 
@@ -284,7 +289,7 @@ class WKDETool(WKDE):
         self.iter_range = (first_iter, last_iter)
 
     def go(self):
-        result = self.evaluate(self.grid)
+        result = self.evaluate(self.grid, cuda=self.args.cuda)
         numpy.savetxt(self.args.output, result)
 
 if __name__ == "__main__":

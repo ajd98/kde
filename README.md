@@ -47,6 +47,8 @@ For more information on the mathematical theory of kernel density estimation, se
 
 This library requires Numpy, Scipy, and Cython.  In addition, gcc is required for compilation.  To install, run `make` from the directory in which this README file is found.
 
+CUDA installation requires the CUDA toolkit and has been tested with CUDA version 8.0.44 on GTX 1080 cards. To install the CUDA backend, run `make cuda` from the directory in which this README file is found. The CUDA backend may be used by passing the `cuda=True` keyword argument to the `evaluate` method of the KDE class.
+
 ## Use
 
 ### Kernel density estimation with arbitrary data
@@ -83,7 +85,7 @@ Methods:
 | Method | Description |
 | ------ | ----------- |
 | `set_kernel_type(kernel)` | Set the kernel to `kernel`. See above for options. |
-| `evaluate(p)` | Evaluate the kernel density estimate at each position of `p`, an _n_-by-_k_ numpy array, where _k_ is the number of features of the samples. |
+| `evaluate(p, cuda=False)` | Evaluate the kernel density estimate at each position of `p`, an _m_-by-_k_ numpy array, where _m_ is the number of samples and _k_ is the number of features. If `cuda=True`, use the CUDA backend (requires compilation with the `cuda` option; see Installation above). |
 
 ### Kernel density estimation with WESTPA data
 
