@@ -15,6 +15,7 @@ libcukde.a: devicelib.o
 	ar cr libcukde.a $(OBJ) devicelib.o
 	#gcc $(OBJ) devicelib.o -L /opt/cuda/lib64 -lcudart  -shared -o libcukde.so
 
-uninstall:
+clean:
 	rm *.a *.o
 
+.PHONY: all clean
